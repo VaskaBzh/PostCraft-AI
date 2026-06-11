@@ -1,3 +1,5 @@
+'use client'
+
 import Anthropic from '@anthropic-ai/sdk'
 import { useStore } from '../store/useStore'
 import type { Platform, Tone, Length } from '../types'

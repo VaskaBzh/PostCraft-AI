@@ -1,7 +1,9 @@
+'use client'
+
 import { motion } from 'framer-motion'
 import {
   Twitter, Instagram, Linkedin, Facebook, Send, Sparkles,
-  Hash, Smile, AlignLeft, AlignCenter, AlignJustify, Settings, Trash2, Key
+  Hash, Smile, AlignLeft, AlignCenter, AlignJustify, Trash2, Key
 } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import type { Platform, Tone, Length } from '../types'
