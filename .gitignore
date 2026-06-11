@@ -34,3 +34,6 @@ skills-lock.json
 
 # Generated docs
 docs-html/
+
+# AI agent instructions (per-developer)
+AGENTS.md
