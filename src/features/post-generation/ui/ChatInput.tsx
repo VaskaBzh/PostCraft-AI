@@ -3,8 +3,8 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Loader2, Lightbulb } from 'lucide-react'
-import { useStore } from '../store/useStore'
-import { useStreamingGenerate } from '../hooks/useStreamingGenerate'
+import { useStore } from '@/shared/model/store'
+import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
 
 const QUICK_PROMPTS = [
   'Анонс нового продукта с акцентом на выгоды',
@@ -78,7 +78,6 @@ export function ChatInput() {
       </AnimatePresence>
 
       <div className="flex items-end gap-2">
-        {/* Quick prompts toggle */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -93,7 +92,6 @@ export function ChatInput() {
           <Lightbulb className="w-5 h-5" />
         </motion.button>
 
-        {/* Input */}
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
@@ -107,7 +105,6 @@ export function ChatInput() {
           />
         </div>
 
-        {/* Send button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}

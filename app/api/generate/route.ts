@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import type { Platform, Tone, Length, AppSettings } from '@/types'
+import type { Platform, Tone, Length, AppSettings } from '@/entities/platform/types'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 

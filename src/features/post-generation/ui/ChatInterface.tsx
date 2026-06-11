@@ -3,10 +3,10 @@
 import { useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, MessageSquarePlus } from 'lucide-react'
-import { useStore } from '../store/useStore'
+import { useStore } from '@/shared/model/store'
 import { MessageBubble } from './MessageBubble'
 import { ChatInput } from './ChatInput'
-import { useStreamingGenerate } from '../hooks/useStreamingGenerate'
+import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
 
 const PLATFORM_LABELS: Record<string, string> = {
   twitter: 'X / Twitter',

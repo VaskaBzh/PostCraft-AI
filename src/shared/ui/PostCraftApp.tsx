@@ -1,7 +1,7 @@
 'use client'
 
 import { Sidebar } from './Sidebar'
-import { ChatInterface } from './ChatInterface'
+import { ChatInterface } from '@/features/post-generation/ui/ChatInterface'
 
 export function PostCraftApp() {
   return (

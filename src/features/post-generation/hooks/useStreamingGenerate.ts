@@ -1,6 +1,6 @@
 'use client'
 
-import { useStore } from '../store/useStore'
+import { useStore } from '@/shared/model/store'
 
 export function useStreamingGenerate() {
   const { settings, addMessage, updateLastMessage, setGenerating } = useStore()
@@ -32,8 +32,6 @@ export function useStreamingGenerate() {
     addMessage(assistantMsg)
     setGenerating(true)
 
-    console.log('[generate] request sent, settings:', settings)
-
     try {
       const response = await fetch('/api/generate', {
         method: 'POST',
@@ -57,7 +55,6 @@ export function useStreamingGenerate() {
       }
 
       updateLastMessage(fullText, true)
-      console.log('[generate] stream complete')
     } catch (err) {
       console.error('[generate] fetch error:', err)
       const errMsg = err instanceof Error ? err.message : 'Неизвестная ошибка'

@@ -2,7 +2,7 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Message, AppSettings, Platform, Tone, Length } from '../types'
+import type { Message, AppSettings, Platform, Tone, Length } from '@/entities/platform/types'
 
 interface StoreState {
   messages: Message[]
