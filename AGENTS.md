@@ -84,15 +84,18 @@ react-test-1/
 
 ## Git Workflow
 
-### Branching (GitHub Flow)
+### Branching (Git Flow)
 
 | Ветка | Назначение |
 |-------|-----------|
-| `main` | Всегда деплоябельный код; прямые коммиты только через PR |
-| `feature/<slug>` | Новые фичи (пример: `feature/bulk-generation`) |
-| `fix/<slug>` | Баг-фиксы (пример: `fix/streaming-disconnect`) |
-| `chore/<slug>` | Рефакторинг, deps, tooling (пример: `chore/update-tailwind`) |
-| `docs/<slug>` | Только документация |
+| `main` | Production-ready код; только релизы и hotfix |
+| `develop` | Основная ветка разработки; база для всех feature-веток |
+| `feature/<slug>` | Новые фичи от `develop` → merge в `develop` |
+| `fix/<slug>` | Баг-фиксы от `develop` → merge в `develop` |
+| `release/<version>` | Подготовка релиза от `develop` → merge в `main` + `develop` |
+| `hotfix/<slug>` | Срочный фикс от `main` → merge в `main` + `develop` |
+
+**Правило:** всегда ветвиться от `develop`, не от `main`.
 
 ### Conventional Commits
 
@@ -125,7 +128,7 @@ chore(deps): upgrade @anthropic-ai/sdk to 0.105
 - Декомпозируй составные команды на отдельные шаги
   - Неправильно: `git add . && git commit -m "..."` одной командой
   - Правильно: сначала `git add <файлы>`, затем `git commit -m "..."`
-- Проект использует git — создавай ветки по схеме `feature/<slug>` для новых задач
+- Проект использует Git Flow — ветки от `develop`, не от `main`. Схема: `feature/<slug>`, `fix/<slug>`, `hotfix/<slug>`
 - API-ключ Anthropic хранится в localStorage — не логировать и не выводить его
 - Все стили — через TailwindCSS, не создавать CSS-файлы для компонентов
 - Компоненты — только именованные экспорты, без default export для компонентов
