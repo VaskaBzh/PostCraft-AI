@@ -1,13 +1,13 @@
+'use client'
+
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Message, AppSettings, Platform, Tone, Length } from '../types'
 
 interface StoreState {
-  apiKey: string
   messages: Message[]
   settings: AppSettings
   isGenerating: boolean
-  setApiKey: (key: string) => void
   addMessage: (msg: Message) => void
   updateLastMessage: (content: string, done?: boolean) => void
   clearMessages: () => void
@@ -21,7 +21,6 @@ interface StoreState {
 export const useStore = create<StoreState>()(
   persist(
     (set) => ({
-      apiKey: '',
       messages: [],
       isGenerating: false,
       settings: {
@@ -32,8 +31,6 @@ export const useStore = create<StoreState>()(
         includeEmojis: true,
         language: 'Русский',
       },
-
-      setApiKey: (key) => set({ apiKey: key }),
 
       addMessage: (msg) =>
         set((s) => ({ messages: [...s.messages, msg] })),
@@ -66,7 +63,7 @@ export const useStore = create<StoreState>()(
     }),
     {
       name: 'postcraft-store',
-      partialize: (s) => ({ apiKey: s.apiKey, settings: s.settings }),
+      partialize: (s) => ({ settings: s.settings }),
     }
   )
 )
