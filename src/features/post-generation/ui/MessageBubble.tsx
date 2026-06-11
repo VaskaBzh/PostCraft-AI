@@ -1,0 +1,152 @@
+'use client'
+
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Copy, Check, Send, RefreshCw } from 'lucide-react'
+import type { Message } from '@/entities/platform/types'
+import { PLATFORM_ICONS, PLATFORM_COLORS, CHAR_LIMITS } from '@/entities/platform/constants'
+
+interface Props {
+  message: Message
+  onRegenerate?: () => void
+}
+
+export function MessageBubble({ message, onRegenerate }: Props) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(message.content)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  if (message.role === 'user') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-end"
+      >
+        <div className="max-w-[70%] bg-gradient-to-br from-violet-600 to-blue-600 rounded-2xl rounded-tr-sm px-4 py-3 shadow-lg shadow-violet-500/10">
+          <p className="text-white text-sm leading-relaxed">{message.content}</p>
+        </div>
+      </motion.div>
+    )
+  }
+
+  const PlatformIcon = PLATFORM_ICONS[message.platform] || Send
+  const color = PLATFORM_COLORS[message.platform] || '#7c3aed'
+  const charLimit = CHAR_LIMITS[message.platform]
+  const charCount = message.content.length
+  const isOverLimit = charLimit && charCount > charLimit
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex justify-start"
+    >
+      <div className="max-w-[85%] w-full">
+        <div className="bg-[#12121e] border border-[#2a2a3f] rounded-2xl rounded-tl-sm overflow-hidden shadow-xl">
+          {/* Header */}
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-[#1e1e2e]">
+            <div className="flex items-center gap-1.5" style={{ color }}>
+              <PlatformIcon className="w-3.5 h-3.5" />
+              <span className="text-xs font-medium capitalize">{message.platform}</span>
+            </div>
+            <span className="text-slate-600 text-xs">·</span>
+            <span className="text-slate-600 text-xs capitalize">{message.tone}</span>
+            {message.isStreaming && (
+              <span className="ml-auto flex items-center gap-1 text-violet-400 text-xs">
+                <span className="inline-flex gap-0.5">
+                  <span className="w-1 h-1 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1 h-1 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '100ms' }} />
+                  <span className="w-1 h-1 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '200ms' }} />
+                </span>
+                Генерация...
+              </span>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="px-4 py-4">
+            <p className="text-slate-100 text-sm leading-relaxed whitespace-pre-wrap">
+              {message.content}
+              {message.isStreaming && (
+                <span className="inline-block w-0.5 h-4 bg-violet-400 ml-0.5 animate-pulse align-text-bottom" />
+              )}
+            </p>
+          </div>
+
+          {/* Footer */}
+          {!message.isStreaming && message.content && (
+            <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#1e1e2e]">
+              <div className="flex items-center gap-1">
+                <span className={`text-xs ${isOverLimit ? 'text-red-400' : 'text-slate-600'}`}>
+                  {charCount}
+                  {charLimit && (
+                    <span className="text-slate-700">/{charLimit}</span>
+                  )}
+                  &nbsp;символов
+                </span>
+                {isOverLimit && (
+                  <span className="text-red-400 text-xs">· Превышен лимит</span>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
+                {onRegenerate && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={onRegenerate}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-[#1e1e2e] transition-all text-xs"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    Ещё раз
+                  </motion.button>
+                )}
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleCopy}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs transition-all"
+                  style={
+                    copied
+                      ? { backgroundColor: `${color}20`, color }
+                      : { color: '#64748b' }
+                  }
+                >
+                  <AnimatePresence mode="wait">
+                    {copied ? (
+                      <motion.span
+                        key="check"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="flex items-center gap-1"
+                      >
+                        <Check className="w-3 h-3" />
+                        Скопировано!
+                      </motion.span>
+                    ) : (
+                      <motion.span
+                        key="copy"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="flex items-center gap-1"
+                      >
+                        <Copy className="w-3 h-3" />
+                        Копировать
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
