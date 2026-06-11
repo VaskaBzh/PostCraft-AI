@@ -82,12 +82,50 @@ react-test-1/
 | .ai-factory/config.yaml | Конфигурация AI Factory (язык, пути, git) |
 | .ai-factory/ARCHITECTURE.md | Слоевая архитектура React SPA: правила зависимостей, слои, анти-паттерны |
 
+## Git Workflow
+
+### Branching (GitHub Flow)
+
+| Ветка | Назначение |
+|-------|-----------|
+| `main` | Всегда деплоябельный код; прямые коммиты только через PR |
+| `feature/<slug>` | Новые фичи (пример: `feature/bulk-generation`) |
+| `fix/<slug>` | Баг-фиксы (пример: `fix/streaming-disconnect`) |
+| `chore/<slug>` | Рефакторинг, deps, tooling (пример: `chore/update-tailwind`) |
+| `docs/<slug>` | Только документация |
+
+### Conventional Commits
+
+Формат: `<type>(<scope>): <subject>`
+
+```
+feat(chat): add platform selector to sidebar
+fix(streaming): handle disconnect during generation
+docs(readme): update API key instructions
+chore(deps): upgrade @anthropic-ai/sdk to 0.105
+```
+
+Типы: `feat` | `fix` | `docs` | `style` | `refactor` | `perf` | `test` | `build` | `ci` | `chore` | `revert`
+
+### Хуки (Husky)
+
+- `commit-msg` — commitlint проверяет формат сообщения
+- `pre-commit` — lint-staged запускает ESLint на staged `.ts`/`.tsx` файлах
+
+### Интерактивный коммит
+
+`npm run commit` — запускает commitizen CLI вместо `git commit -m`
+
+### GitHub MCP
+
+`.mcp.json` настроен с GitHub MCP-сервером. Можно создавать issue, PR, ветки прямо из AI-сессии без браузера.
+
 ## Правила для агентов
 
 - Декомпозируй составные команды на отдельные шаги
   - Неправильно: `git add . && git commit -m "..."` одной командой
   - Правильно: сначала `git add <файлы>`, затем `git commit -m "..."`
-- Проект не использует git — не пытаться создавать ветки или делать push
+- Проект использует git — создавай ветки по схеме `feature/<slug>` для новых задач
 - API-ключ Anthropic хранится в localStorage — не логировать и не выводить его
 - Все стили — через TailwindCSS, не создавать CSS-файлы для компонентов
 - Компоненты — только именованные экспорты, без default export для компонентов
