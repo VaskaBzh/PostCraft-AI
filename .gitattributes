@@ -1,0 +1,17 @@
+# Auto-detect text files and normalize line endings
+* text=auto eol=lf
+
+# Shell scripts must use LF
+*.sh text eol=lf
+.husky/* text eol=lf
+
+# Windows batch files use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.svg text

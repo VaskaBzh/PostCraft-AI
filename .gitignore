@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/settings.json
+.idea/
+
+# AI Factory development tools
+.claude/
+.ai-factory/
+.ai-factory.json
+.agents/
+skills-lock.json
+
+# Generated docs
+docs-html/
