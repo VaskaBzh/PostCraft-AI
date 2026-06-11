@@ -29,5 +29,8 @@ Thumbs.db
 .agents/
 skills-lock.json
 
+# MCP configuration (personal, per-developer)
+.mcp.json
+
 # Generated docs
 docs-html/
