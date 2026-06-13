@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { screen, fireEvent } from '@testing-library/react'
+import { screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { render } from '@/test/utils'
 import { useStore } from '@/shared/model/store'
@@ -90,5 +90,44 @@ describe('ChatInput', () => {
     fireEvent.click(screen.getByText('Мотивационный пост для предпринимателей'))
     const textarea = screen.getByPlaceholderText(/Опишите тему/)
     expect((textarea as HTMLTextAreaElement).value).toBe('Мотивационный пост для предпринимателей')
+  })
+
+  it('shows bookmark button when text is entered', async () => {
+    render(<ChatInput />)
+    const textarea = screen.getByPlaceholderText(/Опишите тему/)
+    await userEvent.type(textarea, 'Тест')
+    expect(screen.getByTitle('Сохранить как шаблон')).toBeInTheDocument()
+  })
+
+  it('shows template name input on bookmark click', async () => {
+    render(<ChatInput />)
+    const textarea = screen.getByPlaceholderText(/Опишите тему/)
+    await userEvent.type(textarea, 'Тест')
+    fireEvent.click(screen.getByTitle('Сохранить как шаблон'))
+    expect(screen.getByPlaceholderText('Название шаблона...')).toBeInTheDocument()
+  })
+
+  it('saves template on Enter key in name input', async () => {
+    render(<ChatInput />)
+    const textarea = screen.getByPlaceholderText(/Опишите тему/)
+    await userEvent.type(textarea, 'Мой промпт')
+    fireEvent.click(screen.getByTitle('Сохранить как шаблон'))
+    const nameInput = screen.getByPlaceholderText('Название шаблона...')
+    await userEvent.type(nameInput, 'Мой шаблон')
+    fireEvent.keyDown(nameInput, { key: 'Enter' })
+    expect(useStore.getState().templates).toHaveLength(1)
+    expect(useStore.getState().templates[0].name).toBe('Мой шаблон')
+  })
+
+  it('cancels template save on Escape key', async () => {
+    render(<ChatInput />)
+    const textarea = screen.getByPlaceholderText(/Опишите тему/)
+    await userEvent.type(textarea, 'Тест')
+    fireEvent.click(screen.getByTitle('Сохранить как шаблон'))
+    const nameInput = screen.getByPlaceholderText('Название шаблона...')
+    fireEvent.keyDown(nameInput, { key: 'Escape' })
+    await waitFor(() =>
+      expect(screen.queryByPlaceholderText('Название шаблона...')).not.toBeInTheDocument()
+    )
   })
 })
