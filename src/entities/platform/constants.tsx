@@ -1,7 +1,7 @@
 'use client'
 
-import { Send, AlignLeft, AlignCenter, AlignJustify } from 'lucide-react'
-import type { Platform, Tone, Length } from './types'
+import { Send, AlignLeft, AlignCenter, AlignJustify, Zap, BarChart2, Sparkles } from 'lucide-react'
+import type { Platform, Tone, Length, ModelOption } from './types'
 
 const TwitterIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -86,3 +86,27 @@ export const PLATFORM_ICONS: Record<string, React.ElementType> = {
   tiktok: TikTokIconSm,
   telegram: Send,
 }
+
+export const MODEL_OPTIONS: (ModelOption & { icon: React.ElementType })[] = [
+  {
+    id: 'claude-haiku-4-5',
+    name: 'Haiku',
+    description: 'Быстрый черновик',
+    speed: 'fast',
+    icon: Zap,
+  },
+  {
+    id: 'claude-sonnet-4-6',
+    name: 'Sonnet',
+    description: 'Сбалансированный',
+    speed: 'balanced',
+    icon: BarChart2,
+  },
+  {
+    id: 'claude-opus-4-8',
+    name: 'Opus',
+    description: 'Максимальное качество',
+    speed: 'quality',
+    icon: Sparkles,
+  },
+]
