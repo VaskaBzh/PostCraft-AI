@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Sparkles, Hash, Smile, Trash2 } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
 import { PLATFORMS, TONES, LENGTHS, LANGUAGES, MODEL_OPTIONS } from '@/entities/platform/constants'
+import { TemplateLibrary } from '@/features/post-generation/ui/TemplateLibrary'
 
 export function Sidebar() {
   const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, clearMessages, setModel } = useStore()
@@ -128,6 +129,9 @@ export function Sidebar() {
             {LANGUAGES.map((l) => <option key={l}>{l}</option>)}
           </select>
         </section>
+
+        {/* Templates */}
+        <TemplateLibrary />
 
         {/* Model */}
         <section>

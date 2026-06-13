@@ -10,6 +10,7 @@ interface StoreState {
   isGenerating: boolean
   selectedModel: ModelId
   templates: Template[]
+  pendingPrompt: string | null
   addMessage: (msg: Message) => void
   updateLastMessage: (content: string, done?: boolean) => void
   clearMessages: () => void
@@ -21,6 +22,8 @@ interface StoreState {
   setModel: (model: ModelId) => void
   saveTemplate: (name: string, prompt: string, settings: Pick<AppSettings, 'platform' | 'tone' | 'length'>) => void
   deleteTemplate: (id: string) => void
+  loadPrompt: (prompt: string) => void
+  clearPendingPrompt: () => void
 }
 
 export const useStore = create<StoreState>()(
@@ -30,6 +33,7 @@ export const useStore = create<StoreState>()(
       isGenerating: false,
       selectedModel: 'claude-opus-4-8',
       templates: [],
+      pendingPrompt: null,
       settings: {
         platform: 'instagram',
         tone: 'casual',
@@ -93,6 +97,9 @@ export const useStore = create<StoreState>()(
 
       deleteTemplate: (id) =>
         set((s) => ({ templates: s.templates.filter((t) => t.id !== id) })),
+
+      loadPrompt: (prompt) => set({ pendingPrompt: prompt }),
+      clearPendingPrompt: () => set({ pendingPrompt: null }),
     }),
     {
       name: 'postcraft-store',
