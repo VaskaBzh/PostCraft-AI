@@ -26,6 +26,7 @@ test.describe('Platform settings', () => {
 
   test('clicking a tone updates the chat header', async ({ page }) => {
     await page.getByRole('button', { name: 'Профессиональный' }).click()
-    await expect(page.getByText(/Профессиональный/)).toBeVisible()
+    // Assert the header subtitle (platform · tone · language), not just the sidebar button
+    await expect(page.getByText(/· Профессиональный ·/)).toBeVisible()
   })
 })

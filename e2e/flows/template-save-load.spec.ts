@@ -31,7 +31,8 @@ test.describe('Template save and load', () => {
     await textarea.clear()
     await expect(textarea).toHaveValue('')
 
-    const templateRow = page.getByText('Шаблон загрузки').locator('..')
+    // Hover the group container (2 levels up: text → flex-1 div → group div)
+    const templateRow = page.getByText('Шаблон загрузки').locator('../..')
     await templateRow.hover()
     await page.getByTitle('Загрузить').click()
 

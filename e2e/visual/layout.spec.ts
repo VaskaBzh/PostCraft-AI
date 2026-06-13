@@ -23,7 +23,7 @@ test.describe('Visual regression', () => {
 
     const textarea = page.getByPlaceholder(/Опишите тему/)
     await textarea.fill('Тема поста')
-    await page.locator('button').last().click()
+    await page.getByTestId('send-button').click()
 
     await expect(page.getByText('Привет! Это демонстрационный пост для Instagram.')).toBeVisible()
     await expect(page.locator('main')).toHaveScreenshot('chat-with-messages.png')

@@ -13,14 +13,14 @@ test.describe('Post generation flow', () => {
   })
 
   test('send button is disabled when textarea is empty', async ({ page }) => {
-    const sendBtn = page.locator('button').last()
+    const sendBtn = page.getByTestId('send-button')
     await expect(sendBtn).toBeDisabled()
   })
 
   test('generates a post and shows it in chat', async ({ page }) => {
     const textarea = page.getByPlaceholder(/Опишите тему/)
     await textarea.fill('Продвижение нового продукта')
-    await page.locator('button').last().click()
+    await page.getByTestId('send-button').click()
 
     await expect(page.getByText('Продвижение нового продукта')).toBeVisible()
     await expect(
@@ -31,7 +31,7 @@ test.describe('Post generation flow', () => {
   test('clears textarea after submission', async ({ page }) => {
     const textarea = page.getByPlaceholder(/Опишите тему/)
     await textarea.fill('Тема для поста')
-    await page.locator('button').last().click()
+    await page.getByTestId('send-button').click()
 
     await expect(textarea).toHaveValue('')
   })
@@ -55,9 +55,9 @@ test.describe('Post generation flow', () => {
 
     const textarea = page.getByPlaceholder(/Опишите тему/)
     await textarea.fill('Тест блокировки')
-    await page.locator('button').last().click()
+    await page.getByTestId('send-button').click()
 
-    const sendBtn = page.locator('button').last()
+    const sendBtn = page.getByTestId('send-button')
     await expect(sendBtn).toBeDisabled()
     await expect(page.getByText('Ответ')).toBeVisible()
   })

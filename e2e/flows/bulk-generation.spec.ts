@@ -41,8 +41,12 @@ test.describe('Bulk generation', () => {
   })
 
   test('can deselect a platform before generating', async ({ page }) => {
-    const tiktokBtn = page.getByRole('button', { name: /TikTok/ }).first()
-    await tiktokBtn.click()
+    // Scope to bulk input area to avoid matching the sidebar platform button
+    const bulkInputArea = page
+      .locator('div')
+      .filter({ hasText: /Опишите тему поста для всех платформ/ })
+      .first()
+    await bulkInputArea.getByRole('button', { name: /TikTok/ }).click()
 
     const generateBtn = page.getByRole('button', { name: /Сгенерировать для 5 платформ/ })
     await expect(generateBtn).toBeVisible()
