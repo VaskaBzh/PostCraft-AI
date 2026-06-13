@@ -3,6 +3,7 @@ import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import prettier from 'eslint-config-prettier'
 
 export default defineConfig([
   globalIgnores(['.next', 'dist']),
@@ -17,4 +18,5 @@ export default defineConfig([
       globals: { ...globals.browser, ...globals.node },
     },
   },
+  prettier,
 ])
