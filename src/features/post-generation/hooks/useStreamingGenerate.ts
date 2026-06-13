@@ -3,7 +3,7 @@
 import { useStore } from '@/shared/model/store'
 
 export function useStreamingGenerate() {
-  const { settings, addMessage, updateLastMessage, setGenerating } = useStore()
+  const { settings, selectedModel, addMessage, updateLastMessage, setGenerating } = useStore()
 
   const generate = async (userPrompt: string) => {
     if (!userPrompt.trim()) return
@@ -36,7 +36,7 @@ export function useStreamingGenerate() {
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: userPrompt, settings }),
+        body: JSON.stringify({ prompt: userPrompt, settings, model: selectedModel }),
       })
 
       if (!response.ok || !response.body) {

@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-import type { Platform, Tone, Length, AppSettings } from '@/entities/platform/types'
+import type { Platform, Tone, Length, AppSettings, ModelId } from '@/entities/platform/types'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -47,17 +47,20 @@ function buildSystemPrompt(settings: AppSettings): string {
 
 export async function POST(request: Request) {
   try {
-    const { prompt, settings } = (await request.json()) as {
+    const { prompt, settings, model } = (await request.json()) as {
       prompt: string
       settings: AppSettings
+      model?: ModelId
     }
 
-    console.log('[api/generate] request received, platform:', settings.platform)
+    const selectedModel: ModelId = model ?? 'claude-opus-4-8'
+
+    console.log('[api/generate] request received, platform:', settings.platform, 'model:', selectedModel)
 
     const stream = client.messages.stream({
-      model: 'claude-opus-4-8',
+      model: selectedModel,
       max_tokens: 1024,
-      thinking: { type: 'adaptive' },
+      ...(selectedModel === 'claude-opus-4-8' ? { thinking: { type: 'adaptive' } } : {}),
       system: buildSystemPrompt(settings),
       messages: [{ role: 'user', content: prompt }],
     })

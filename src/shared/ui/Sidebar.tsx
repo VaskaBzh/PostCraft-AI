@@ -3,9 +3,10 @@
 import { motion } from 'framer-motion'
 import { Sparkles, Hash, Smile, Trash2 } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
-import { PLATFORMS, TONES, LENGTHS, LANGUAGES } from '@/entities/platform/constants'
+import { PLATFORMS, TONES, LENGTHS, LANGUAGES, MODEL_OPTIONS } from '@/entities/platform/constants'
+
 export function Sidebar() {
-  const { settings, setPlatform, setTone, setLength, setSettings, clearMessages } = useStore()
+  const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, clearMessages, setModel } = useStore()
 
   return (
     <aside className="w-64 flex-shrink-0 bg-[#0e0e1a] border-r border-[#1e1e2e] flex flex-col h-full overflow-y-auto">
@@ -126,6 +127,37 @@ export function Sidebar() {
           >
             {LANGUAGES.map((l) => <option key={l}>{l}</option>)}
           </select>
+        </section>
+
+        {/* Model */}
+        <section>
+          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Модель</label>
+          <div className="space-y-0.5">
+            {MODEL_OPTIONS.map(({ id, name, description, icon: Icon }) => (
+              <motion.button
+                key={id}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setModel(id)}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
+                  selectedModel === id
+                    ? 'bg-violet-600/20 text-violet-300 font-medium'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-[#1a1a2e]'
+                }`}
+              >
+                <Icon className="w-4 h-4 flex-shrink-0" />
+                <div className="flex flex-col items-start min-w-0">
+                  <span className="truncate leading-none">{name}</span>
+                  <span className="text-[10px] text-slate-500 leading-none mt-0.5">{description}</span>
+                </div>
+                {selectedModel === id && (
+                  <motion.div
+                    layoutId="model-dot"
+                    className="ml-auto w-1.5 h-1.5 rounded-full bg-violet-400 flex-shrink-0"
+                  />
+                )}
+              </motion.button>
+            ))}
+          </div>
         </section>
       </div>
 
