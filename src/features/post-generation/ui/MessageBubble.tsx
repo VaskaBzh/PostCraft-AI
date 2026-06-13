@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Check, Send, RefreshCw } from 'lucide-react'
+import { Copy, Check, Send, RefreshCw, Eye, AlignLeft } from 'lucide-react'
 import type { Message } from '@/entities/platform/types'
 import { PLATFORM_ICONS, PLATFORM_COLORS, CHAR_LIMITS } from '@/entities/platform/constants'
+import { PostPreview } from './PostPreview'
 
 interface Props {
   message: Message
@@ -13,6 +14,7 @@ interface Props {
 
 export function MessageBubble({ message, onRegenerate }: Props) {
   const [copied, setCopied] = useState(false)
+  const [view, setView] = useState<'text' | 'preview'>('text')
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content)
@@ -66,16 +68,43 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                 Генерация...
               </span>
             )}
+            {/* Text / Preview toggle */}
+            {!message.isStreaming && message.content && (
+              <div className="ml-auto flex items-center gap-0.5 bg-[#1e1e2e] rounded-lg p-0.5">
+                <button
+                  onClick={() => setView('text')}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] transition-all ${
+                    view === 'text' ? 'bg-[#2a2a3f] text-slate-300' : 'text-slate-600 hover:text-slate-400'
+                  }`}
+                >
+                  <AlignLeft className="w-3 h-3" />
+                  Текст
+                </button>
+                <button
+                  onClick={() => setView('preview')}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] transition-all ${
+                    view === 'preview' ? 'bg-[#2a2a3f] text-slate-300' : 'text-slate-600 hover:text-slate-400'
+                  }`}
+                >
+                  <Eye className="w-3 h-3" />
+                  Превью
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Content */}
           <div className="px-4 py-4">
-            <p className="text-slate-100 text-sm leading-relaxed whitespace-pre-wrap">
-              {message.content}
-              {message.isStreaming && (
-                <span className="inline-block w-0.5 h-4 bg-violet-400 ml-0.5 animate-pulse align-text-bottom" />
-              )}
-            </p>
+            {view === 'preview' && !message.isStreaming && message.content ? (
+              <PostPreview text={message.content} platform={message.platform} />
+            ) : (
+              <p className="text-slate-100 text-sm leading-relaxed whitespace-pre-wrap">
+                {message.content}
+                {message.isStreaming && (
+                  <span className="inline-block w-0.5 h-4 bg-violet-400 ml-0.5 animate-pulse align-text-bottom" />
+                )}
+              </p>
+            )}
           </div>
 
           {/* Footer */}
