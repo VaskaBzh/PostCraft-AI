@@ -38,5 +38,10 @@ docs-html/
 # Test coverage output
 coverage/
 
+# Playwright E2E output
+test-results/
+playwright-report/
+.playwright/
+
 # AI agent instructions (per-developer)
 AGENTS.md

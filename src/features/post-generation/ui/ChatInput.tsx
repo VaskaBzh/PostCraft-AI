@@ -90,7 +90,10 @@ export function ChatInput() {
 
   const handleSaveKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleSaveTemplate()
-    if (e.key === 'Escape') { setShowSave(false); setTemplateName('') }
+    if (e.key === 'Escape') {
+      setShowSave(false)
+      setTemplateName('')
+    }
   }
 
   return (
@@ -144,7 +147,10 @@ export function ChatInput() {
               <Check className="w-4 h-4" />
             </button>
             <button
-              onClick={() => { setShowSave(false); setTemplateName('') }}
+              onClick={() => {
+                setShowSave(false)
+                setTemplateName('')
+              }}
               className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-[#1a1a2e] transition-all"
             >
               <X className="w-4 h-4" />
@@ -193,6 +199,7 @@ export function ChatInput() {
         </div>
 
         <motion.button
+          data-testid="send-button"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleSubmit}
@@ -201,11 +208,21 @@ export function ChatInput() {
         >
           <AnimatePresence mode="wait">
             {isGenerating ? (
-              <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="loading"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <Loader2 className="w-5 h-5 text-white animate-spin" />
               </motion.div>
             ) : (
-              <motion.div key="send" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div
+                key="send"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
                 <Send className="w-4 h-4 text-white" />
               </motion.div>
             )}
