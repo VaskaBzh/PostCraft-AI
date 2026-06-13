@@ -1,13 +1,14 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Sparkles, Hash, Smile, Trash2 } from 'lucide-react'
+import { Sparkles, Hash, Smile } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
 import { PLATFORMS, TONES, LENGTHS, LANGUAGES, MODEL_OPTIONS } from '@/entities/platform/constants'
 import { TemplateLibrary } from '@/features/post-generation/ui/TemplateLibrary'
+import { HistoryPanel } from '@/features/post-generation/ui/HistoryPanel'
 
 export function Sidebar() {
-  const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, clearMessages, setModel } = useStore()
+  const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, setModel } = useStore()
 
   return (
     <aside className="w-64 flex-shrink-0 bg-[#0e0e1a] border-r border-[#1e1e2e] flex flex-col h-full overflow-y-auto">
@@ -133,6 +134,9 @@ export function Sidebar() {
         {/* Templates */}
         <TemplateLibrary />
 
+        {/* History */}
+        <HistoryPanel />
+
         {/* Model */}
         <section>
           <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Модель</label>
@@ -165,16 +169,8 @@ export function Sidebar() {
         </section>
       </div>
 
-      {/* Bottom actions */}
-      <div className="p-3 border-t border-[#1e1e2e]">
-        <button
-          onClick={clearMessages}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 text-sm transition-all"
-        >
-          <Trash2 className="w-4 h-4" />
-          Очистить историю
-        </button>
-      </div>
+      {/* Bottom padding */}
+      <div className="p-2 border-t border-[#1e1e2e]" />
     </aside>
   )
 }
