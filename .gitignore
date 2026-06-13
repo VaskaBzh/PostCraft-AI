@@ -35,5 +35,8 @@ skills-lock.json
 # Generated docs
 docs-html/
 
+# Test coverage output
+coverage/
+
 # AI agent instructions (per-developer)
 AGENTS.md
