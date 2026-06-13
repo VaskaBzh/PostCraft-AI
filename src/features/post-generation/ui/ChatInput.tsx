@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, Loader2, Lightbulb } from 'lucide-react'
+import { Send, Loader2, Lightbulb, Bookmark, Check, X } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
 import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
 
@@ -20,9 +20,28 @@ const QUICK_PROMPTS = [
 export function ChatInput() {
   const [value, setValue] = useState('')
   const [showQuick, setShowQuick] = useState(false)
+  const [showSave, setShowSave] = useState(false)
+  const [templateName, setTemplateName] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const templateInputRef = useRef<HTMLInputElement>(null)
+
   const isGenerating = useStore((s) => s.isGenerating)
+  const { saveTemplate, settings } = useStore()
   const { generate } = useStreamingGenerate()
+
+  const applyPendingPrompt = useCallback((prompt: string) => {
+    setValue(prompt)
+    textareaRef.current?.focus()
+  }, [])
+
+  useEffect(() => {
+    return useStore.subscribe((state, prev) => {
+      if (state.pendingPrompt !== null && state.pendingPrompt !== prev.pendingPrompt) {
+        applyPendingPrompt(state.pendingPrompt)
+        useStore.getState().clearPendingPrompt()
+      }
+    })
+  }, [applyPendingPrompt])
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -30,6 +49,12 @@ export function ChatInput() {
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
     }
   }, [value])
+
+  useEffect(() => {
+    if (showSave) {
+      templateInputRef.current?.focus()
+    }
+  }, [showSave])
 
   const handleSubmit = async () => {
     if (!value.trim() || isGenerating) return
@@ -49,6 +74,23 @@ export function ChatInput() {
     setValue(prompt)
     setShowQuick(false)
     textareaRef.current?.focus()
+  }
+
+  const handleSaveTemplate = () => {
+    const name = templateName.trim()
+    if (!name || !value.trim()) return
+    saveTemplate(name, value.trim(), {
+      platform: settings.platform,
+      tone: settings.tone,
+      length: settings.length,
+    })
+    setShowSave(false)
+    setTemplateName('')
+  }
+
+  const handleSaveKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSaveTemplate()
+    if (e.key === 'Escape') { setShowSave(false); setTemplateName('') }
   }
 
   return (
@@ -73,6 +115,40 @@ export function ChatInput() {
                 {prompt}
               </motion.button>
             ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Save as template inline field */}
+      <AnimatePresence>
+        {showSave && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-2 flex items-center gap-2"
+          >
+            <input
+              ref={templateInputRef}
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              onKeyDown={handleSaveKeyDown}
+              placeholder="Название шаблона..."
+              className="flex-1 bg-[#12121e] border border-violet-500/40 text-white placeholder-slate-600 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-violet-500 transition-all"
+            />
+            <button
+              onClick={handleSaveTemplate}
+              disabled={!templateName.trim() || !value.trim()}
+              className="p-2 rounded-lg bg-violet-600/20 text-violet-400 hover:bg-violet-600/30 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              <Check className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => { setShowSave(false); setTemplateName('') }}
+              className="p-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-[#1a1a2e] transition-all"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -103,6 +179,17 @@ export function ChatInput() {
             disabled={isGenerating}
             className="w-full bg-[#12121e] border border-[#2a2a3f] text-white placeholder-slate-600 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/20 transition-all disabled:opacity-50 pr-12 leading-relaxed"
           />
+          {value.trim() && (
+            <button
+              onClick={() => setShowSave((v) => !v)}
+              title="Сохранить как шаблон"
+              className={`absolute right-3 bottom-3 p-0.5 rounded transition-all ${
+                showSave ? 'text-violet-400' : 'text-slate-600 hover:text-slate-400'
+              }`}
+            >
+              <Bookmark className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         <motion.button

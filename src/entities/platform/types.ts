@@ -39,3 +39,20 @@ export interface AppSettings {
   includeEmojis: boolean
   language: string
 }
+
+export type ModelId = 'claude-haiku-4-5' | 'claude-sonnet-4-6' | 'claude-opus-4-8'
+
+export interface ModelOption {
+  id: ModelId
+  name: string
+  description: string
+  speed: 'fast' | 'balanced' | 'quality'
+}
+
+export interface Template {
+  id: string
+  name: string
+  prompt: string
+  settings: Pick<AppSettings, 'platform' | 'tone' | 'length'>
+  createdAt: number
+}

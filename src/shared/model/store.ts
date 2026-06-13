@@ -2,12 +2,15 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Message, AppSettings, Platform, Tone, Length } from '@/entities/platform/types'
+import type { Message, AppSettings, Platform, Tone, Length, ModelId, Template } from '@/entities/platform/types'
 
 interface StoreState {
   messages: Message[]
   settings: AppSettings
   isGenerating: boolean
+  selectedModel: ModelId
+  templates: Template[]
+  pendingPrompt: string | null
   addMessage: (msg: Message) => void
   updateLastMessage: (content: string, done?: boolean) => void
   clearMessages: () => void
@@ -16,6 +19,11 @@ interface StoreState {
   setTone: (t: Tone) => void
   setLength: (l: Length) => void
   setGenerating: (v: boolean) => void
+  setModel: (model: ModelId) => void
+  saveTemplate: (name: string, prompt: string, settings: Pick<AppSettings, 'platform' | 'tone' | 'length'>) => void
+  deleteTemplate: (id: string) => void
+  loadPrompt: (prompt: string) => void
+  clearPendingPrompt: () => void
 }
 
 export const useStore = create<StoreState>()(
@@ -23,6 +31,9 @@ export const useStore = create<StoreState>()(
     (set) => ({
       messages: [],
       isGenerating: false,
+      selectedModel: 'claude-opus-4-8',
+      templates: [],
+      pendingPrompt: null,
       settings: {
         platform: 'instagram',
         tone: 'casual',
@@ -33,7 +44,14 @@ export const useStore = create<StoreState>()(
       },
 
       addMessage: (msg) =>
-        set((s) => ({ messages: [...s.messages, msg] })),
+        set((s) => {
+          const msgs = [...s.messages, msg]
+          if (msgs.length > 200) {
+            console.warn('[store] history trimmed to 200')
+            return { messages: msgs.slice(-200) }
+          }
+          return { messages: msgs }
+        }),
 
       updateLastMessage: (content, done = false) =>
         set((s) => {
@@ -60,10 +78,37 @@ export const useStore = create<StoreState>()(
         set((s) => ({ settings: { ...s.settings, length } })),
 
       setGenerating: (isGenerating) => set({ isGenerating }),
+
+      setModel: (selectedModel) => set({ selectedModel }),
+
+      saveTemplate: (name, prompt, settings) =>
+        set((s) => ({
+          templates: [
+            ...s.templates,
+            {
+              id: crypto.randomUUID(),
+              name,
+              prompt,
+              settings,
+              createdAt: Date.now(),
+            },
+          ],
+        })),
+
+      deleteTemplate: (id) =>
+        set((s) => ({ templates: s.templates.filter((t) => t.id !== id) })),
+
+      loadPrompt: (prompt) => set({ pendingPrompt: prompt }),
+      clearPendingPrompt: () => set({ pendingPrompt: null }),
     }),
     {
       name: 'postcraft-store',
-      partialize: (s) => ({ settings: s.settings }),
+      partialize: (s) => ({
+        settings: s.settings,
+        selectedModel: s.selectedModel,
+        templates: s.templates,
+        messages: s.messages,
+      }),
     }
   )
 )
