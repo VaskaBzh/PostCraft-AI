@@ -1,103 +1,97 @@
-[Back to README](../README.md) · [Настройки →](configuration.md)
+[Back to README](../README.md) · [Configuration →](configuration.md)
 
-# Быстрый старт
+# Getting Started
 
-## Требования
+## Requirements
 
-| Зависимость        | Версия                                                 |
-| ------------------ | ------------------------------------------------------ |
-| Node.js            | 18+                                                    |
-| npm                | 9+                                                     |
-| API-ключ Anthropic | [console.anthropic.com](https://console.anthropic.com) |
+| Dependency        | Version                                                |
+| ----------------- | ------------------------------------------------------ |
+| Node.js           | 22+                                                    |
+| npm               | 10+                                                    |
+| Anthropic API key | [console.anthropic.com](https://console.anthropic.com) |
 
-## Установка и запуск
+## Setup
 
 ```bash
-# 1. Установить зависимости
+# 1. Clone the repository
+git clone https://github.com/VaskaBzh/PostCraft-AI.git
+cd PostCraft-AI
+
+# 2. Install dependencies
 npm install
 
-# 2. Запустить dev-сервер
+# 3. Copy and configure the environment file
+cp .env.example .env.local
+# Open .env.local and set your API key:
+# ANTHROPIC_API_KEY=sk-ant-api03-...
+
+# 4. Start the dev server
 npm run dev
 ```
 
-Откройте `http://localhost:5173`.
+Open **http://localhost:3000**.
 
-## Получение API-ключа
+## Getting an API Key
 
-1. Зайдите на [console.anthropic.com](https://console.anthropic.com)
+1. Go to [console.anthropic.com](https://console.anthropic.com)
 2. **API Keys → Create Key**
-3. Скопируйте ключ вида `sk-ant-api03-...`
-4. Вставьте в поле на экране приветствия PostCraft
+3. Copy the key (starts with `sk-ant-api03-...`)
+4. Paste it into `.env.local`
 
-Ключ сохраняется в `localStorage` — при следующем открытии вводить повторно не нужно.
+The key is read server-side only — it is never sent to the browser.
 
-**Смена ключа:** кнопка **API ключ** в нижней части боковой панели.
+## First Post
 
-## Первая генерация
+1. Open the app and confirm the sidebar shows a platform selector (Twitter/X is default)
+2. Configure tone, length, hashtags/emojis in the sidebar
+3. Type your post idea in the input field at the bottom
+4. Press `Ctrl+Enter` or click the send button
+5. Watch the text stream character-by-character as Claude generates it
 
-1. Выберите платформу в боковой панели (например, Instagram)
-2. Настройте тон, длину, хештеги/эмодзи
-3. Введите идею поста в поле ввода
-4. Нажмите `Ctrl+Enter` или кнопку отправки
-5. Текст появится в реальном времени по мере генерации
-
-## Скрипты
+## Scripts
 
 ```bash
-npm run dev      # dev-сервер с HMR на http://localhost:5173
-npm run build    # production-сборка в папку dist/
-npm run preview  # предпросмотр production-сборки
-npm run lint     # ESLint-проверка кода
+npm run dev           # dev server at http://localhost:3000
+npm run build         # production build (outputs to .next/)
+npm run start         # start production server
+npm run lint          # ESLint check on src/
+npm run test          # Vitest unit tests
+npm run test:coverage # unit tests with coverage (≥80% threshold enforced)
+npm run e2e           # Playwright E2E tests (requires ANTHROPIC_API_KEY)
+npm run e2e:ui        # Playwright UI mode for debugging
 ```
 
-Альтернативно через Makefile (`make help` — список всех команд):
+## Manual Testing Checklist
 
-| Команда          | Описание                                    |
-| ---------------- | ------------------------------------------- |
-| `make dev`       | Запустить dev-сервер                        |
-| `make build`     | Production-сборка в `dist/`                 |
-| `make preview`   | Просмотр production-сборки                  |
-| `make lint`      | Запустить ESLint                            |
-| `make typecheck` | TypeScript-проверка типов                   |
-| `make ci`        | Полный CI-прогон (lint + typecheck + build) |
-| `make clean`     | Очистить артефакты сборки                   |
+### API key screen
 
-## Ручное тестирование
+1. Open DevTools → Application → Local Storage → `postcraft-store`
+2. Delete `apiKey`, reload the page — the API key input screen should appear
+3. Enter an invalid key (not starting with `sk-ant-`) — an error should display
+4. Enter a valid key — the main chat interface should load
 
-### Экран приветствия (API-ключ)
+### Real-time streaming
 
-1. `DevTools → Application → Local Storage → postcraft-store`
-2. Удалите `apiKey`, перезагрузите страницу — должен появиться экран ввода
-3. Введите невалидный ключ (без `sk-ant-`) — должна появиться ошибка
-4. Введите корректный ключ — приложение переходит в основной интерфейс
+1. Send a prompt
+2. Text should stream character-by-character (observe the shimmer cursor)
+3. Copy and regenerate buttons appear only after generation completes
 
-### Потоковая генерация
+### Platform character counter
 
-1. Введите запрос и отправьте
-2. Текст должен появляться посимвольно (shimmer-эффект во время генерации)
-3. Кнопки копирования и перегенерации появляются только после завершения
+1. Select Twitter/X and generate a long post
+2. The character counter should warn when the 280-character limit is exceeded
 
-### Кнопка «Ещё раз»
+### Quick prompts
 
-- Отображается только у последнего сообщения ассистента
-- Повторно генерирует пост на основе того же запроса
+1. Click the 💡 icon left of the input field
+2. Select a template — it should fill the input field
 
-### Быстрые промпты
+### History clear
 
-- Нажмите иконку 💡 слева от поля ввода
-- Выберите готовый промпт — он вставится в поле
-
-### Очистка истории
-
-- Кнопка **Очистить историю** в боковой панели удаляет все сообщения
-- Настройки и API-ключ при этом сохраняются
-
-## Стоимость запросов
-
-Используется **Claude Opus 4.8**: $5 за 1M входящих токенов, $25 за 1M исходящих.  
-Один пост ≈ 300–800 вх. + 100–500 исх. токенов → **< $0.01** за запрос.
+1. Click **Очистить историю** in the sidebar
+2. All messages are removed; API key and settings remain
 
 ## See Also
 
-- [Настройки](configuration.md) — платформы, тон, длина, хештеги, язык
-- [Архитектура](architecture.md) — как работает приложение под капотом
+- [Configuration](configuration.md) — platforms, tones, length, hashtags, language
+- [Architecture](architecture.md) — how the app works under the hood
