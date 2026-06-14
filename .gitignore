@@ -35,6 +35,9 @@ skills-lock.json
 # Generated docs
 docs-html/
 
+# Local-only notes (not for version control)
+docs/local/
+
 # Test coverage output
 coverage/
 
