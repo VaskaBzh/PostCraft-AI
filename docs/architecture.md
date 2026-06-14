@@ -1,129 +1,151 @@
-[← Настройки](configuration.md) · [Back to README](../README.md)
+[← Configuration](configuration.md) · [Back to README](../README.md)
 
-# Архитектура
+# Architecture
 
-PostCraft использует **слоевую архитектуру**, адаптированную для React SPA.
+PostCraft uses a **server-client split** built on Next.js App Router. The Anthropic API key lives only on the server; the browser never touches it.
 
-## Схема работы
-
-```
-Пользователь → ChatInput
-                   ↓
-          useStreamingGenerate (хук)
-                   ↓
-          Anthropic SDK → client.messages.stream()
-          claude-opus-4-8 · thinking: adaptive
-                   ↓
-          content_block_delta события (stream)
-                   ↓
-          Zustand store → updateLastMessage()
-                   ↓
-          MessageBubble рендерит в реальном времени
-```
-
-## Структура папок
+## Request Flow
 
 ```
-src/
-├── components/          # Слой представления
-│   ├── ApiKeySetup.tsx   # Экран ввода API-ключа (первый запуск)
-│   ├── ChatInterface.tsx # Главный экран: история + ввод
-│   ├── ChatInput.tsx     # Поле ввода + быстрые промпты
-│   ├── MessageBubble.tsx # Пузырь сообщения + копировать/перегенерировать
-│   └── Sidebar.tsx       # Боковая панель: платформа, тон, настройки
+User input
+    ↓
+ChatInput (client component)
+    ↓
+useStreamingGenerate hook  →  POST /api/generate
+                                      ↓
+                              Next.js Route Handler
+                              app/api/generate/route.ts
+                              (server-side, reads ANTHROPIC_API_KEY from env)
+                                      ↓
+                              @anthropic-ai/sdk
+                              client.messages.stream()
+                              model: claude-opus-4-8
+                              thinking: adaptive
+                                      ↓
+                              ReadableStream → text chunks
+                                      ↓
+                              Zustand store → updateLastMessage()
+                                      ↓
+                          MessageBubble renders in real time
+```
+
+## Folder Structure
+
+```
+app/                              # Next.js App Router
+├── layout.tsx                    # root layout (server component)
+├── page.tsx                      # entry → <PostCraftApp />
+└── api/generate/
+    └── route.ts                  # POST handler — streaming (server-side)
+
+src/                              # Feature-Sliced Design (FSD-inspired)
+├── entities/                     # business domain — types and constants
+│   └── platform/
+│       ├── types.ts              # Platform, Tone, Length, Message, AppSettings
+│       └── constants.tsx         # PLATFORMS, TONES, LENGTHS, char limits, icons
 │
-├── hooks/               # Слой логики приложения
-│   └── useStreamingGenerate.ts  # Вызов API + потоковое обновление store
+├── features/                     # user-facing features (depend on entities + shared)
+│   └── post-generation/
+│       ├── hooks/
+│       │   ├── useStreamingGenerate.ts   # fetch → /api/generate, stream → store
+│       │   └── useBulkGenerate.ts        # generate for all platforms at once
+│       └── ui/
+│           ├── ChatInterface.tsx         # message list + input area
+│           ├── ChatInput.tsx             # text input + quick-prompt picker
+│           ├── MessageBubble.tsx         # post bubble + copy/regenerate
+│           ├── BulkGenerationView.tsx    # bulk mode layout
+│           ├── HistoryPanel.tsx          # chat history panel
+│           ├── PostPreview.tsx           # visual platform preview
+│           └── TemplateLibrary.tsx       # prompt template picker
 │
-├── store/               # Слой состояния
-│   └── useStore.ts       # Zustand store + persist (localStorage)
-│
-└── types.ts             # Общие типы: Platform, Tone, Length, Message
+└── shared/                       # reusable infrastructure (no feature dependencies)
+    ├── model/
+    │   └── store.ts              # Zustand store + persist (localStorage)
+    └── ui/
+        ├── PostCraftApp.tsx      # app shell — sidebar + feature layout
+        └── Sidebar.tsx           # platform + tone + settings panel
 ```
 
-## Правила зависимостей
+## Dependency Rules
 
 ```
-components → hooks → store → types
-     ↓           ↓
- (Framer      (Anthropic
-  Motion)      SDK)
+app/ → shared/ → features/ → entities/
+  ↓
+Route Handler (server boundary)
 ```
 
-| Разрешено | Запрещено |
-|-----------|-----------|
-| Компонент импортирует хук | Хук импортирует компонент |
-| Хук импортирует store | Store импортирует хук |
-| Хук импортирует Anthropic SDK | Компонент вызывает SDK напрямую |
-| Любой слой импортирует `types.ts` | `types.ts` импортирует что-либо из src |
+| Allowed                                                | Forbidden                                      |
+| ------------------------------------------------------ | ---------------------------------------------- |
+| `features` imports from `entities` and `shared/model`  | Feature imports from another feature           |
+| `shared/ui` imports from `entities` and `shared/model` | `shared` imports from `features`               |
+| `app/page.tsx` imports from `shared/ui`                | `app/` imports directly from `features/`       |
+| Route Handler reads `process.env`                      | Client code reads `process.env`                |
+| Any layer imports from `entities/`                     | `entities/` imports anything from other layers |
 
-## Технологический стек
+## Tech Stack
 
-| Слой | Технология | Версия |
-|------|-----------|--------|
-| Фреймворк | React | 19 |
-| Язык | TypeScript | 6 |
-| Сборщик | Vite | 8 |
-| Стили | TailwindCSS | v4 |
-| Анимации | Framer Motion | 12 |
-| Иконки | Lucide React | 1.17 |
-| Состояние | Zustand | 5 |
-| AI SDK | @anthropic-ai/sdk | 0.104 |
+| Layer      | Technology         | Version |
+| ---------- | ------------------ | ------- |
+| Framework  | Next.js App Router | 16      |
+| Language   | TypeScript         | 6       |
+| Styles     | TailwindCSS        | v4      |
+| Animations | Framer Motion      | 12      |
+| Icons      | Lucide React       | 1.17    |
+| State      | Zustand            | 5       |
+| AI SDK     | @anthropic-ai/sdk  | 0.104   |
 
-## Состояние приложения (Zustand store)
+## Zustand Store Shape
 
 ```typescript
 interface StoreState {
-  apiKey: string          // Anthropic API-ключ
-  messages: Message[]     // история чата (не персистируется)
-  settings: AppSettings   // платформа, тон, длина, хештеги, эмодзи, язык
-  isGenerating: boolean   // идёт ли генерация прямо сейчас
+  apiKey: string // Anthropic API key
+  messages: Message[] // chat history (not persisted — clears on reload)
+  settings: AppSettings // platform, tone, length, hashtags, emojis, language
+  isGenerating: boolean // true while a stream is in flight
 }
 
-// persist: сохраняются только apiKey + settings
-// messages очищаются при перезагрузке
+// persist: saves only apiKey + settings to localStorage key "postcraft-store"
 ```
 
-## Паттерн чтения store
+### Selector Pattern
 
 ```typescript
-// ✅ Правильно: читать только нужное поле
+// Correct — subscribe to only the field you need
 const isGenerating = useStore((s) => s.isGenerating)
 
-// ❌ Неправильно: деструктурировать весь store — лишние ре-рендеры
+// Wrong — subscribes to the entire store, causes unnecessary re-renders
 const { isGenerating, messages } = useStore()
 ```
 
-## Потоковая генерация
+## Streaming Implementation
 
-`useStreamingGenerate` итерирует по событиям SDK:
+`useStreamingGenerate` reads the `ReadableStream` returned by the Route Handler:
 
 ```typescript
-const stream = client.messages.stream({
-  model: 'claude-opus-4-8',
-  thinking: { type: 'adaptive' },
-  system: buildSystemPrompt(...),
-  messages: [{ role: 'user', content: userPrompt }],
-})
+const response = await fetch('/api/generate', { method: 'POST', body: ... })
+const reader = response.body!.getReader()
+const decoder = new TextDecoder()
 
-for await (const event of stream) {
-  if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-    fullText += event.delta.text
-    updateLastMessage(fullText)  // обновляет store — компонент ре-рендерится
-  }
+while (true) {
+  const { done, value } = await reader.read()
+  if (done) break
+  fullText += decoder.decode(value, { stream: true })
+  updateLastMessage(fullText)   // Zustand update → MessageBubble re-renders
 }
 ```
 
-## Анти-паттерны
+## Anti-Patterns
 
-| Нельзя | Почему |
-|--------|--------|
-| Вызывать Anthropic SDK из компонента | Логика API принадлежит хукам |
-| Хранить историю в localStorage | Намеренное решение: история не персистируется |
-| Создавать `.module.css` для компонентов | Все стили — через TailwindCSS |
-| Использовать `default export` для компонентов | Только именованные экспорты |
+| Don't                               | Why                                    |
+| ----------------------------------- | -------------------------------------- |
+| Call Anthropic SDK from a component | API logic belongs in the Route Handler |
+| Store chat history in localStorage  | Intentional: history is session-only   |
+| Create `.module.css` for components | All styles go through TailwindCSS      |
+| Use `default export` for components | Named exports only                     |
+| Read `process.env` in client code   | Server-only; use Route Handler instead |
 
 ## See Also
 
-- [Быстрый старт](getting-started.md) — установка и запуск
-- [Настройки](configuration.md) — платформы, тон, системный промпт
+- [Getting Started](getting-started.md) — setup and first run
+- [Configuration](configuration.md) — how settings are composed into the system prompt
+- [ADR Index](adr/README.md) — why these decisions were made
