@@ -8,6 +8,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   outputDir: 'test-results/',
+  // Platform-independent snapshot names so CI (Linux) uses the same baselines as dev (Windows/Mac)
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',

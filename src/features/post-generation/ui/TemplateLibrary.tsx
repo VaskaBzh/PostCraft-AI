@@ -51,7 +51,9 @@ export function TemplateLibrary() {
                 <div className="flex-1 min-w-0">
                   <div className="text-slate-300 text-xs font-medium truncate">{t.name}</div>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="text-[10px] text-violet-400">{platformName(t.settings.platform)}</span>
+                    <span className="text-[10px] text-violet-400">
+                      {platformName(t.settings.platform)}
+                    </span>
                     <span className="text-slate-600 text-[10px]">{formatDate(t.createdAt)}</span>
                   </div>
                 </div>

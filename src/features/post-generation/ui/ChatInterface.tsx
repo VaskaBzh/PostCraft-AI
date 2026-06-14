@@ -4,9 +4,9 @@ import { useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, MessageSquarePlus } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
+import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
 import { MessageBubble } from './MessageBubble'
 import { ChatInput } from './ChatInput'
-import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
 
 const PLATFORM_LABELS: Record<string, string> = {
   twitter: 'X / Twitter',
@@ -44,7 +44,8 @@ export function ChatInterface() {
         <div>
           <h1 className="text-white font-semibold text-sm">Генератор постов</h1>
           <p className="text-slate-500 text-xs mt-0.5">
-            {PLATFORM_LABELS[settings.platform]} · {TONE_LABELS[settings.tone]} · {settings.language}
+            {PLATFORM_LABELS[settings.platform]} · {TONE_LABELS[settings.tone]} ·{' '}
+            {settings.language}
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-[#12121e] border border-[#2a2a3f] rounded-full px-3 py-1.5">

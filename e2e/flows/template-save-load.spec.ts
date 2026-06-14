@@ -6,11 +6,13 @@ test.describe('Template save and load', () => {
     await page.goto('/')
     await clearLocalStorage(page)
     await page.reload()
+    await page.waitForLoadState('networkidle')
   })
 
   test('saves a template via bookmark button', async ({ page }) => {
     const textarea = page.getByPlaceholder(/Опишите тему/)
-    await textarea.fill('Промпт для шаблона')
+    await textarea.click()
+    await page.keyboard.type('Промпт для шаблона')
 
     await page.getByTitle('Сохранить как шаблон').click()
     const nameInput = page.getByPlaceholder('Название шаблона...')
@@ -22,7 +24,8 @@ test.describe('Template save and load', () => {
 
   test('loads a saved template into the textarea', async ({ page }) => {
     const textarea = page.getByPlaceholder(/Опишите тему/)
-    await textarea.fill('Промпт для загрузки')
+    await textarea.click()
+    await page.keyboard.type('Промпт для загрузки')
 
     await page.getByTitle('Сохранить как шаблон').click()
     await page.getByPlaceholder('Название шаблона...').fill('Шаблон загрузки')
@@ -41,7 +44,8 @@ test.describe('Template save and load', () => {
 
   test('cancels template save with Escape key', async ({ page }) => {
     const textarea = page.getByPlaceholder(/Опишите тему/)
-    await textarea.fill('Тест отмены')
+    await textarea.click()
+    await page.keyboard.type('Тест отмены')
 
     await page.getByTitle('Сохранить как шаблон').click()
     const nameInput = page.getByPlaceholder('Название шаблона...')
@@ -54,7 +58,8 @@ test.describe('Template save and load', () => {
 
   test('deletes a template', async ({ page }) => {
     const textarea = page.getByPlaceholder(/Опишите тему/)
-    await textarea.fill('Удаляемый промпт')
+    await textarea.click()
+    await page.keyboard.type('Удаляемый промпт')
 
     await page.getByTitle('Сохранить как шаблон').click()
     await page.getByPlaceholder('Название шаблона...').fill('Для удаления')
