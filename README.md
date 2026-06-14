@@ -1,179 +1,129 @@
-# PostCraft AI — Генератор постов для соцсетей
+# PostCraft AI
 
-Профессиональное AI-приложение для создания постов под любую платформу с потоковой генерацией через Claude Opus 4.8.
+> AI-powered social media post generator with real-time streaming via Claude.
+
+[![CI](https://github.com/VaskaBzh/PostCraft-AI/actions/workflows/ci.yml/badge.svg)](https://github.com/VaskaBzh/PostCraft-AI/actions/workflows/ci.yml)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22-green?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ---
 
-## Быстрый старт
+![PostCraft AI — generate social media posts with real-time streaming](docs/demo.png)
+
+---
+
+## Features
+
+- **6 platforms** — Twitter/X (280), Instagram (2 200), LinkedIn (3 000), Facebook, TikTok, Telegram
+- **5 tones** — professional, casual, humorous, inspirational, bold
+- **3 length presets** — short (1–3 sentences), medium (3–7), long (7+)
+- **Hashtag & emoji toggles** — Claude adds them only when enabled
+- **Language selector** — generate posts in any language
+- **Real-time streaming** — text streams character-by-character as Claude generates
+- **One-click copy** — copy the finished post directly from the chat bubble
+- **Regenerate** — re-run the same prompt with one click
+- **Adaptive thinking** — uses `claude-opus-4-8` with extended thinking for higher-quality output
+- **Session history** — conversation context kept for the session (cleared on page reload)
+
+---
+
+## Quick Start
 
 ```bash
+# 1. Clone the repository
+git clone https://github.com/VaskaBzh/PostCraft-AI.git
+cd PostCraft-AI
+
+# 2. Install dependencies
 npm install
+
+# 3. Set up environment
+cp .env.example .env.local
+# Edit .env.local and add your Anthropic API key:
+# ANTHROPIC_API_KEY=sk-ant-...
+
+# 4. Start the development server
 npm run dev
 ```
 
-Откройте **http://localhost:5173** в браузере.
+Open **http://localhost:3000** in your browser.
 
-При первом запуске приложение попросит ввести Anthropic API ключ.
+### Getting an API Key
 
----
-
-## Получение API ключа
-
-1. Зайдите на [console.anthropic.com](https://console.anthropic.com)
+1. Go to [console.anthropic.com](https://console.anthropic.com)
 2. **API Keys → Create Key**
-3. Скопируйте ключ вида `sk-ant-api03-...`
-4. Вставьте в поле на экране приветствия
-
-Ключ сохраняется в `localStorage` — вводить повторно не нужно. Сменить можно через кнопку **API ключ** внизу боковой панели.
+3. Copy the key (starts with `sk-ant-api03-...`)
+4. Paste it into `.env.local`
 
 ---
 
-## Как пользоваться
+## Tech Stack
 
-### 1. Выберите платформу в левой панели
-
-| Платформа | Лимит символов |
-|-----------|---------------|
-| X / Twitter | 280 |
-| Instagram | 2 200 |
-| LinkedIn | 3 000 |
-| Facebook | без лимита |
-| TikTok | 2 200 |
-| Telegram | без лимита |
-
-### 2. Настройте параметры
-
-- **Тон** — профессиональный, casual, юмористический, вдохновляющий, смелый
-- **Длина** — коротко / средне / длинно
-- **Хештеги** — включить/выключить
-- **Эмодзи** — включить/выключить
-- **Язык** — русский, английский, немецкий и другие
-
-### 3. Введите идею и нажмите отправить
-
-Примеры запросов:
-- `Анонс нового SaaS-продукта с акцентом на время экономии`
-- `Мотивационный пост для стартаперов после провала`
-- `Промо обучающего курса по Python`
-
-Нажмите на лампочку 💡 для быстрых заготовок промптов.
-
-### 4. Работа с результатом
-
-- **Копировать** — скопировать готовый пост одним кликом
-- **Ещё раз** — перегенерировать с теми же настройками
-- Счётчик символов показывает, укладываетесь ли вы в лимит платформы
+| Layer      | Technology                      | Version |
+| ---------- | ------------------------------- | ------- |
+| Framework  | Next.js App Router              | 16      |
+| Language   | TypeScript                      | 6       |
+| Styles     | TailwindCSS                     | v4      |
+| Animations | Framer Motion                   | 12      |
+| State      | Zustand (persisted)             | 5       |
+| Icons      | Lucide React                    | 1.17    |
+| AI         | Anthropic SDK + Claude Opus 4.8 | 0.104   |
+| Unit tests | Vitest + Testing Library        | 4       |
+| E2E tests  | Playwright                      | 1.60    |
+| CI/CD      | GitHub Actions + Vercel         | —       |
 
 ---
 
-## Как это работает
+## How It Works
 
 ```
-Пользователь → ChatInput → useStreamingGenerate hook
-                                    ↓
-                          Anthropic SDK (stream)
-                          claude-opus-4-8
-                          thinking: adaptive
-                                    ↓
-                          content_block_delta события
-                                    ↓
-                          Zustand store → updateLastMessage()
-                                    ↓
-                          MessageBubble рендерит в реальном времени
+User input
+    ↓
+ChatInput component
+    ↓
+useStreamingGenerate hook  →  POST /api/generate
+                                      ↓
+                              Next.js Route Handler
+                              (server-side, API key never leaves server)
+                                      ↓
+                              Anthropic SDK
+                              claude-opus-4-8 · thinking: adaptive
+                                      ↓
+                              ReadableStream → chunks
+                                      ↓
+                              Zustand store → updateLastMessage()
+                                      ↓
+                          MessageBubble renders in real time
 ```
 
-### Технологический стек
-
-| Слой | Технология |
-|------|-----------|
-| Фреймворк | React 19 + TypeScript |
-| Сборщик | Vite 8 |
-| Стили | Tailwind CSS v4 |
-| Анимации | Framer Motion |
-| Иконки | Lucide React |
-| Стейт | Zustand (persist в localStorage) |
-| AI | Anthropic SDK + Claude Opus 4.8 |
-
-### Ключевые файлы
-
-```
-src/
-├── hooks/useStreamingGenerate.ts   # стриминг через Anthropic SDK
-├── store/useStore.ts               # глобальный стейт (zustand)
-├── components/
-│   ├── ApiKeySetup.tsx             # экран первого запуска
-│   ├── Sidebar.tsx                 # панель настроек
-│   ├── ChatInterface.tsx           # область сообщений
-│   ├── MessageBubble.tsx           # пузырь с постом + кнопки
-│   └── ChatInput.tsx               # поле ввода + быстрые промпты
-└── types.ts                        # Platform, Tone, Length, Message
-```
-
-### Системный промпт
-
-Каждый запрос собирает контекст из настроек и передаёт Claude:
-
-```
-Платформа: Instagram (до 2200 символов, визуальный storytelling)
-Тон: casual и дружелюбный — разговорный, тёплый
-Длина: средний (3-7 предложений)
-Хештеги: добавь релевантные хештеги
-Эмодзи: используй уместно
-Язык: Русский
-```
-
-Модель получает инструкцию писать **только готовый пост** без вступлений и объяснений.
+The API key lives only in `.env.local` and is read server-side inside the Route Handler — it is never sent to the browser.
 
 ---
 
-## Тестирование вручную
-
-### Экран приветствия
-1. Откройте DevTools → Application → Local Storage → `postcraft-store`
-2. Удалите ключ `apiKey` и перезагрузите страницу — должен появиться экран ввода ключа
-3. Введите невалидный ключ (без `sk-ant-`) — должна появиться ошибка валидации
-4. Введите корректный ключ — приложение переходит в основной интерфейс
-
-### Стриминг
-1. Введите запрос и нажмите кнопку отправки или Ctrl+Enter
-2. Текст должен появляться посимвольно (шиммер-эффект во время генерации)
-3. Кнопки копирования и перегенерации появляются только после завершения
-
-### Смена платформы
-1. Переключитесь с Instagram на Twitter
-2. Сгенерируйте длинный пост
-3. Счётчик символов должен показать предупреждение если пост > 280 символов
-
-### Кнопка «Ещё раз»
-- Появляется только у последнего сообщения ассистента
-- Повторно генерирует пост на основе того же запроса пользователя
-
-### Быстрые промпты
-1. Нажмите иконку лампочки слева от поля ввода
-2. Выберите один из 8 готовых промптов — он вставится в поле ввода
-
-### Очистка истории
-- Кнопка **Очистить историю** в нижней части сайдбара удаляет все сообщения
-- Настройки и API ключ при этом сохраняются
-
-### Смена API ключа
-- Кнопка **API ключ** внизу сайдбара открывает модальное окно смены ключа
-- Невалидный ключ отклоняется с сообщением об ошибке
-
----
-
-## Скрипты
+## Scripts
 
 ```bash
-npm run dev      # dev-сервер с HMR на http://localhost:5173
-npm run build    # production сборка в папку dist/
-npm run preview  # предпросмотр production сборки
-npm run lint     # ESLint проверка
+npm run dev           # dev server at http://localhost:3000
+npm run build         # production build
+npm run start         # start production server
+npm run lint          # ESLint check
+npm run test          # run unit tests
+npm run test:coverage # unit tests with coverage report (≥80% threshold)
+npm run e2e           # Playwright end-to-end tests
 ```
 
 ---
 
-## Стоимость запросов
+## Docs
 
-Используется **Claude Opus 4.8** — $5 за 1M входящих токенов, $25 за 1M исходящих.  
-Один запрос на генерацию поста ≈ 300–800 токенов входящих + 100–500 исходящих → **< $0.01** за пост.
+- [Getting Started](docs/getting-started.md) — setup, first generation, manual testing
+- [Configuration](docs/configuration.md) — platforms, tones, system prompt
+- [Architecture](docs/architecture.md) — folder structure, data flow, dependency rules
+- [Branch Protection](docs/branch-protection.md) — Git Flow, branch rules, CI requirements
+- [Architecture Decision Records](docs/adr/README.md) — key technical decisions
+
+---
+
+> One post generation ≈ 300–800 input tokens + 100–500 output tokens with Claude Opus 4.8 → **< $0.01** per post.

@@ -4,6 +4,7 @@ node_modules/
 # Build
 dist/
 build/
+.next/
 
 # Environment
 .env
@@ -19,7 +20,6 @@ npm-debug.log*
 Thumbs.db
 
 # Editors
-.vscode/settings.json
 .idea/
 
 # AI Factory development tools
@@ -29,5 +29,25 @@ Thumbs.db
 .agents/
 skills-lock.json
 
+# MCP configuration (personal, per-developer)
+.mcp.json
+
 # Generated docs
 docs-html/
+
+# Local-only notes (not for version control)
+docs/local/
+
+# Test coverage output
+coverage/
+
+# Playwright E2E output
+test-results/
+playwright-report/
+.playwright/
+e2e/visual/layout.spec.ts-snapshots/
+
+# AI agent instructions (per-developer)
+AGENTS.md
+
+.vercel
