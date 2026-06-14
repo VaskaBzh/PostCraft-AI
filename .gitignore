@@ -45,6 +45,7 @@ coverage/
 test-results/
 playwright-report/
 .playwright/
+e2e/visual/layout.spec.ts-snapshots/
 
 # AI agent instructions (per-developer)
 AGENTS.md
