@@ -20,7 +20,8 @@ test.describe('Bulk generation', () => {
 
   test('generates posts for all platforms and shows results', async ({ page }) => {
     const textarea = page.getByPlaceholder(/Опишите тему поста для всех платформ/)
-    await textarea.fill('Анонс нового продукта')
+    await textarea.click()
+    await page.keyboard.type('Анонс нового продукта')
 
     await page.getByRole('button', { name: /Сгенерировать для/ }).click()
 
@@ -34,19 +35,19 @@ test.describe('Bulk generation', () => {
     })
 
     const textarea = page.getByPlaceholder(/Опишите тему поста для всех платформ/)
-    await textarea.fill('Тест кнопки стоп')
+    await textarea.click()
+    await page.keyboard.type('Тест кнопки стоп')
     await page.getByRole('button', { name: /Сгенерировать для/ }).click()
 
     await expect(page.getByRole('button', { name: 'Стоп' })).toBeVisible()
   })
 
   test('can deselect a platform before generating', async ({ page }) => {
-    // Scope to bulk input area to avoid matching the sidebar platform button
-    const bulkInputArea = page
-      .locator('div')
-      .filter({ hasText: /Опишите тему поста для всех платформ/ })
-      .first()
-    await bulkInputArea.getByRole('button', { name: /TikTok/ }).click()
+    // Scope to main to avoid matching the sidebar platform button (sidebar is <aside>)
+    await page
+      .locator('main')
+      .getByRole('button', { name: /TikTok/ })
+      .click()
 
     const generateBtn = page.getByRole('button', { name: /Сгенерировать для 5 платформ/ })
     await expect(generateBtn).toBeVisible()

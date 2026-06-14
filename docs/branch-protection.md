@@ -58,8 +58,6 @@ Job dependencies:
 - `e2e` waits for `unit` to pass
 - `build` waits for `lint`, `typecheck`, and `e2e` to pass
 
-The `ANTHROPIC_API_KEY` secret is required for `e2e` and `build` jobs. It must be set in the repository's **Settings → Secrets and variables → Actions**.
-
 ## Commit Convention
 
 All commits must follow [Conventional Commits](https://www.conventionalcommits.org/):
@@ -69,6 +67,47 @@ All commits must follow [Conventional Commits](https://www.conventionalcommits.o
 ```
 
 Enforced by `commitlint` via the pre-commit hook. Valid types: `feat`, `fix`, `docs`, `refactor`, `chore`, `ci`, `test`, `perf`.
+
+## GitHub Setup
+
+### Configuring Branch Rules (GitHub UI)
+
+1. Go to **Settings → Branches** in your repository
+2. Click **Add branch ruleset**
+
+**For `main`:**
+
+- Branch name pattern: `main`
+- Enable **Require a pull request before merging** (approvals: 1)
+- Enable **Require status checks to pass** — add: `Lint`, `Type check`, `Unit tests`, `E2E tests`, `Build`
+- Enable **Require branches to be up to date before merging**
+- Enable **Do not allow bypassing the above settings**
+
+**For `develop`:**
+
+- Branch name pattern: `develop`
+- Enable **Require a pull request before merging**
+- Enable **Require status checks to pass** — same checks as `main`
+- Enable **Require branches to be up to date before merging**
+
+### Required GitHub Secrets
+
+Add in **Settings → Secrets and variables → Actions**:
+
+| Secret              | Description           | Where to get                             |
+| ------------------- | --------------------- | ---------------------------------------- |
+| `ANTHROPIC_API_KEY` | Claude API key        | console.anthropic.com                    |
+| `VERCEL_TOKEN`      | Vercel personal token | vercel.com/account/tokens                |
+| `VERCEL_ORG_ID`     | Vercel team/user ID   | vercel.com/account → Settings            |
+| `VERCEL_PROJECT_ID` | Vercel project ID     | vercel.com/\<team\>/\<project\>/settings |
+
+To get `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`, run once locally after linking the project:
+
+```bash
+npx vercel link
+cat .vercel/project.json
+# { "orgId": "...", "projectId": "..." }
+```
 
 ## See Also
 

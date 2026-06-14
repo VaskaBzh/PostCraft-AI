@@ -23,10 +23,13 @@ export default defineConfig([
       globals: { ...globals.browser, ...globals.node },
     },
     rules: {
-      'import-x/order': ['warn', {
-        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
-        'newlines-between': 'never',
-      }],
+      'import-x/order': [
+        'warn',
+        {
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'never',
+        },
+      ],
       'import-x/no-duplicates': 'error',
     },
   },

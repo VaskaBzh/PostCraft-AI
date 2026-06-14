@@ -8,7 +8,8 @@ import { TemplateLibrary } from '@/features/post-generation/ui/TemplateLibrary'
 import { HistoryPanel } from '@/features/post-generation/ui/HistoryPanel'
 
 export function Sidebar() {
-  const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, setModel } = useStore()
+  const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, setModel } =
+    useStore()
 
   return (
     <aside className="w-64 flex-shrink-0 bg-[#0e0e1a] border-r border-[#1e1e2e] flex flex-col h-full overflow-y-auto">
@@ -28,7 +29,9 @@ export function Sidebar() {
       <div className="flex-1 p-3 space-y-5 overflow-y-auto scrollbar-thin scrollbar-thumb-[#2a2a3f] scrollbar-track-transparent">
         {/* Platform */}
         <section>
-          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Платформа</label>
+          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
+            Платформа
+          </label>
           <div className="space-y-0.5">
             {PLATFORMS.map(({ id, name, icon: Icon, color }) => (
               <motion.button
@@ -58,7 +61,9 @@ export function Sidebar() {
 
         {/* Tone */}
         <section>
-          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Тон</label>
+          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
+            Тон
+          </label>
           <div className="space-y-0.5">
             {TONES.map(({ id, name, emoji }) => (
               <motion.button
@@ -80,7 +85,9 @@ export function Sidebar() {
 
         {/* Length */}
         <section>
-          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Длина</label>
+          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
+            Длина
+          </label>
           <div className="flex gap-1">
             {LENGTHS.map(({ id, label, icon: Icon }) => (
               <motion.button
@@ -102,7 +109,9 @@ export function Sidebar() {
 
         {/* Options */}
         <section>
-          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Опции</label>
+          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
+            Опции
+          </label>
           <div className="space-y-1">
             <Toggle
               icon={Hash}
@@ -121,13 +130,17 @@ export function Sidebar() {
 
         {/* Language */}
         <section>
-          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Язык</label>
+          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
+            Язык
+          </label>
           <select
             value={settings.language}
             onChange={(e) => setSettings({ language: e.target.value })}
             className="w-full bg-[#1a1a2e] border border-[#2a2a3f] text-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-violet-500 cursor-pointer"
           >
-            {LANGUAGES.map((l) => <option key={l}>{l}</option>)}
+            {LANGUAGES.map((l) => (
+              <option key={l}>{l}</option>
+            ))}
           </select>
         </section>
 
@@ -139,7 +152,9 @@ export function Sidebar() {
 
         {/* Model */}
         <section>
-          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">Модель</label>
+          <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
+            Модель
+          </label>
           <div className="space-y-0.5">
             {MODEL_OPTIONS.map(({ id, name, description, icon: Icon }) => (
               <motion.button
@@ -155,7 +170,9 @@ export function Sidebar() {
                 <Icon className="w-4 h-4 flex-shrink-0" />
                 <div className="flex flex-col items-start min-w-0">
                   <span className="truncate leading-none">{name}</span>
-                  <span className="text-[10px] text-slate-500 leading-none mt-0.5">{description}</span>
+                  <span className="text-[10px] text-slate-500 leading-none mt-0.5">
+                    {description}
+                  </span>
                 </div>
                 {selectedModel === id && (
                   <motion.div
@@ -192,8 +209,12 @@ function Toggle({
       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-[#1a1a2e] transition-all group"
     >
       <Icon className={`w-4 h-4 ${value ? 'text-violet-400' : 'text-slate-600'}`} />
-      <span className={`text-sm flex-1 text-left ${value ? 'text-slate-300' : 'text-slate-600'}`}>{label}</span>
-      <div className={`w-8 h-4 rounded-full transition-all relative ${value ? 'bg-violet-600' : 'bg-[#2a2a3f]'}`}>
+      <span className={`text-sm flex-1 text-left ${value ? 'text-slate-300' : 'text-slate-600'}`}>
+        {label}
+      </span>
+      <div
+        className={`w-8 h-4 rounded-full transition-all relative ${value ? 'bg-violet-600' : 'bg-[#2a2a3f]'}`}
+      >
         <motion.div
           animate={{ x: value ? 16 : 2 }}
           transition={{ type: 'spring', stiffness: 500, damping: 30 }}
@@ -203,4 +224,3 @@ function Toggle({
     </button>
   )
 }
-

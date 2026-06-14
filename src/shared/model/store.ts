@@ -2,7 +2,15 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Message, AppSettings, Platform, Tone, Length, ModelId, Template } from '@/entities/platform/types'
+import type {
+  Message,
+  AppSettings,
+  Platform,
+  Tone,
+  Length,
+  ModelId,
+  Template,
+} from '@/entities/platform/types'
 
 interface StoreState {
   messages: Message[]
@@ -20,7 +28,11 @@ interface StoreState {
   setLength: (l: Length) => void
   setGenerating: (v: boolean) => void
   setModel: (model: ModelId) => void
-  saveTemplate: (name: string, prompt: string, settings: Pick<AppSettings, 'platform' | 'tone' | 'length'>) => void
+  saveTemplate: (
+    name: string,
+    prompt: string,
+    settings: Pick<AppSettings, 'platform' | 'tone' | 'length'>
+  ) => void
   deleteTemplate: (id: string) => void
   loadPrompt: (prompt: string) => void
   clearPendingPrompt: () => void
@@ -65,17 +77,13 @@ export const useStore = create<StoreState>()(
 
       clearMessages: () => set({ messages: [] }),
 
-      setSettings: (partial) =>
-        set((s) => ({ settings: { ...s.settings, ...partial } })),
+      setSettings: (partial) => set((s) => ({ settings: { ...s.settings, ...partial } })),
 
-      setPlatform: (platform) =>
-        set((s) => ({ settings: { ...s.settings, platform } })),
+      setPlatform: (platform) => set((s) => ({ settings: { ...s.settings, platform } })),
 
-      setTone: (tone) =>
-        set((s) => ({ settings: { ...s.settings, tone } })),
+      setTone: (tone) => set((s) => ({ settings: { ...s.settings, tone } })),
 
-      setLength: (length) =>
-        set((s) => ({ settings: { ...s.settings, length } })),
+      setLength: (length) => set((s) => ({ settings: { ...s.settings, length } })),
 
       setGenerating: (isGenerating) => set({ isGenerating }),
 
@@ -95,8 +103,7 @@ export const useStore = create<StoreState>()(
           ],
         })),
 
-      deleteTemplate: (id) =>
-        set((s) => ({ templates: s.templates.filter((t) => t.id !== id) })),
+      deleteTemplate: (id) => set((s) => ({ templates: s.templates.filter((t) => t.id !== id) })),
 
       loadPrompt: (prompt) => set({ pendingPrompt: prompt }),
       clearPendingPrompt: () => set({ pendingPrompt: null }),

@@ -23,11 +23,7 @@ function groupByDate(messages: Message[]): { label: string; items: Message[] }[]
 
   for (const msg of messages) {
     const d = new Date(msg.timestamp)
-    const label = isSameDay(d, today)
-      ? 'Сегодня'
-      : isSameDay(d, yesterday)
-        ? 'Вчера'
-        : fmt(d)
+    const label = isSameDay(d, today) ? 'Сегодня' : isSameDay(d, yesterday) ? 'Вчера' : fmt(d)
     if (!map.has(label)) map.set(label, [])
     map.get(label)!.push(msg)
   }
@@ -93,7 +89,9 @@ export function HistoryPanel() {
           <AnimatePresence initial={false}>
             {groups.map(({ label, items }) => (
               <div key={label}>
-                <div className="text-[9px] text-slate-600 uppercase tracking-widest px-1 mb-1">{label}</div>
+                <div className="text-[9px] text-slate-600 uppercase tracking-widest px-1 mb-1">
+                  {label}
+                </div>
                 {items.map((msg) => (
                   <motion.div
                     key={msg.id}
@@ -102,7 +100,9 @@ export function HistoryPanel() {
                     exit={{ opacity: 0, x: -4 }}
                     className="group flex items-start gap-1.5 px-2 py-1 rounded-lg hover:bg-[#1a1a2e] transition-all"
                   >
-                    <span className={`text-[9px] mt-0.5 flex-shrink-0 ${msg.role === 'user' ? 'text-violet-500' : 'text-slate-600'}`}>
+                    <span
+                      className={`text-[9px] mt-0.5 flex-shrink-0 ${msg.role === 'user' ? 'text-violet-500' : 'text-slate-600'}`}
+                    >
                       {msg.role === 'user' ? 'ты' : 'ai'}
                     </span>
                     <span className="text-[11px] text-slate-400 line-clamp-2 flex-1 leading-relaxed">

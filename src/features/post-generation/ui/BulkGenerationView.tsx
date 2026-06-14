@@ -18,9 +18,7 @@ export function BulkGenerationView() {
   const hasResults = Object.keys(results).length > 0
 
   const togglePlatform = (id: Platform) => {
-    setSelected((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
-    )
+    setSelected((prev) => (prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]))
   }
 
   const handleGenerate = async () => {
@@ -52,7 +50,11 @@ export function BulkGenerationView() {
                   ? 'text-white border-transparent'
                   : 'text-slate-500 border-[#2a2a3f] hover:border-slate-600'
               }`}
-              style={selected.includes(id) ? { backgroundColor: `${color}25`, borderColor: `${color}50`, color } : {}}
+              style={
+                selected.includes(id)
+                  ? { backgroundColor: `${color}25`, borderColor: `${color}50`, color }
+                  : {}
+              }
             >
               <Icon className="w-3 h-3" />
               {name}
@@ -72,9 +74,13 @@ export function BulkGenerationView() {
             }`}
           >
             {isRunning ? (
-              <><Square className="w-4 h-4" /> Стоп</>
+              <>
+                <Square className="w-4 h-4" /> Стоп
+              </>
             ) : (
-              <><Zap className="w-4 h-4" /> Сгенерировать для {selected.length} платформ</>
+              <>
+                <Zap className="w-4 h-4" /> Сгенерировать для {selected.length} платформ
+              </>
             )}
           </motion.button>
         </div>
@@ -89,7 +95,9 @@ export function BulkGenerationView() {
               animate={{ opacity: 1 }}
               className="grid grid-cols-2 gap-3"
             >
-              {(Object.entries(results) as [Platform, NonNullable<typeof results[Platform]>][]).map(([platform, result]) => (
+              {(
+                Object.entries(results) as [Platform, NonNullable<(typeof results)[Platform]>][]
+              ).map(([platform, result]) => (
                 <BulkResultCard key={platform} platform={platform} result={result} />
               ))}
             </motion.div>

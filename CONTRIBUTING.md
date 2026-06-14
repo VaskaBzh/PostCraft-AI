@@ -16,12 +16,12 @@ main       ←── hotfix/*
 
 ### Типы веток
 
-| Ветка | Откуда | Куда | Назначение |
-|-------|--------|------|-----------|
-| `feature/<slug>` | `develop` | `develop` | Новая функциональность |
-| `fix/<slug>` | `develop` | `develop` | Баг-фикс в процессе разработки |
-| `release/<version>` | `develop` | `main` + `develop` | Подготовка релиза |
-| `hotfix/<slug>` | `main` | `main` + `develop` | Срочный фикс в production |
+| Ветка               | Откуда    | Куда               | Назначение                     |
+| ------------------- | --------- | ------------------ | ------------------------------ |
+| `feature/<slug>`    | `develop` | `develop`          | Новая функциональность         |
+| `fix/<slug>`        | `develop` | `develop`          | Баг-фикс в процессе разработки |
+| `release/<version>` | `develop` | `main` + `develop` | Подготовка релиза              |
+| `hotfix/<slug>`     | `main`    | `main` + `develop` | Срочный фикс в production      |
 
 ### Обычный workflow (feature)
 

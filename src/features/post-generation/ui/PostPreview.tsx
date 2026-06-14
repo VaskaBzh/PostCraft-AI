@@ -27,9 +27,15 @@ function TwitterPreview({ text }: { text: string }) {
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
           {over && <p className="text-red-500 text-xs mt-1">{text.length}/280</p>}
           <div className="flex gap-5 mt-3 text-slate-500">
-            <button className="flex items-center gap-1 text-xs hover:text-blue-500"><MessageCircle className="w-3.5 h-3.5" /> 0</button>
-            <button className="flex items-center gap-1 text-xs hover:text-green-500"><Repeat2 className="w-3.5 h-3.5" /> 0</button>
-            <button className="flex items-center gap-1 text-xs hover:text-red-500"><Heart className="w-3.5 h-3.5" /> 0</button>
+            <button className="flex items-center gap-1 text-xs hover:text-blue-500">
+              <MessageCircle className="w-3.5 h-3.5" /> 0
+            </button>
+            <button className="flex items-center gap-1 text-xs hover:text-green-500">
+              <Repeat2 className="w-3.5 h-3.5" /> 0
+            </button>
+            <button className="flex items-center gap-1 text-xs hover:text-red-500">
+              <Heart className="w-3.5 h-3.5" /> 0
+            </button>
           </div>
         </div>
       </div>
@@ -40,7 +46,9 @@ function TwitterPreview({ text }: { text: string }) {
 function InstagramPreview({ text }: { text: string }) {
   return (
     <div className="bg-white rounded-2xl overflow-hidden max-w-sm mx-auto shadow-lg text-black">
-      <div className="aspect-square bg-gradient-to-br from-violet-400 to-blue-400 flex items-center justify-center text-white text-4xl">📸</div>
+      <div className="aspect-square bg-gradient-to-br from-violet-400 to-blue-400 flex items-center justify-center text-white text-4xl">
+        📸
+      </div>
       <div className="p-3">
         <div className="flex items-center gap-2 mb-2">
           {AVATAR}
@@ -64,9 +72,15 @@ function LinkedInPreview({ text }: { text: string }) {
       </div>
       <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
       <div className="flex gap-4 mt-3 pt-3 border-t border-slate-200 text-slate-500">
-        <button className="flex items-center gap-1 text-xs hover:text-blue-600"><ThumbsUp className="w-3.5 h-3.5" /> Нравится</button>
-        <button className="flex items-center gap-1 text-xs hover:text-blue-600"><MessageCircle className="w-3.5 h-3.5" /> Комментарий</button>
-        <button className="flex items-center gap-1 text-xs hover:text-blue-600"><Send className="w-3.5 h-3.5" /> Поделиться</button>
+        <button className="flex items-center gap-1 text-xs hover:text-blue-600">
+          <ThumbsUp className="w-3.5 h-3.5" /> Нравится
+        </button>
+        <button className="flex items-center gap-1 text-xs hover:text-blue-600">
+          <MessageCircle className="w-3.5 h-3.5" /> Комментарий
+        </button>
+        <button className="flex items-center gap-1 text-xs hover:text-blue-600">
+          <Send className="w-3.5 h-3.5" /> Поделиться
+        </button>
       </div>
     </div>
   )
@@ -97,9 +111,15 @@ function FacebookPreview({ text }: { text: string }) {
       </div>
       <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
       <div className="flex gap-4 mt-3 pt-3 border-t border-slate-200 text-slate-500">
-        <button className="flex items-center gap-1 text-xs hover:text-blue-600"><ThumbsUp className="w-3.5 h-3.5" /> Нравится</button>
-        <button className="flex items-center gap-1 text-xs hover:text-blue-600"><MessageCircle className="w-3.5 h-3.5" /> Комментарий</button>
-        <button className="flex items-center gap-1 text-xs hover:text-blue-600"><Send className="w-3.5 h-3.5" /> Поделиться</button>
+        <button className="flex items-center gap-1 text-xs hover:text-blue-600">
+          <ThumbsUp className="w-3.5 h-3.5" /> Нравится
+        </button>
+        <button className="flex items-center gap-1 text-xs hover:text-blue-600">
+          <MessageCircle className="w-3.5 h-3.5" /> Комментарий
+        </button>
+        <button className="flex items-center gap-1 text-xs hover:text-blue-600">
+          <Send className="w-3.5 h-3.5" /> Поделиться
+        </button>
       </div>
     </div>
   )
@@ -114,7 +134,9 @@ function TikTokPreview({ text }: { text: string }) {
           {AVATAR}
           <span className="text-white font-semibold text-sm">@postcraft_user</span>
         </div>
-        <p className="text-white text-sm leading-relaxed whitespace-pre-wrap line-clamp-4">{text}</p>
+        <p className="text-white text-sm leading-relaxed whitespace-pre-wrap line-clamp-4">
+          {text}
+        </p>
       </div>
     </div>
   )

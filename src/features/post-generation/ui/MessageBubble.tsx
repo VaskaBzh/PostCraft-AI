@@ -61,9 +61,18 @@ export function MessageBubble({ message, onRegenerate }: Props) {
             {message.isStreaming && (
               <span className="ml-auto flex items-center gap-1 text-violet-400 text-xs">
                 <span className="inline-flex gap-0.5">
-                  <span className="w-1 h-1 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1 h-1 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '100ms' }} />
-                  <span className="w-1 h-1 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '200ms' }} />
+                  <span
+                    className="w-1 h-1 rounded-full bg-violet-400 animate-bounce"
+                    style={{ animationDelay: '0ms' }}
+                  />
+                  <span
+                    className="w-1 h-1 rounded-full bg-violet-400 animate-bounce"
+                    style={{ animationDelay: '100ms' }}
+                  />
+                  <span
+                    className="w-1 h-1 rounded-full bg-violet-400 animate-bounce"
+                    style={{ animationDelay: '200ms' }}
+                  />
                 </span>
                 Генерация...
               </span>
@@ -74,7 +83,9 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                 <button
                   onClick={() => setView('text')}
                   className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] transition-all ${
-                    view === 'text' ? 'bg-[#2a2a3f] text-slate-300' : 'text-slate-600 hover:text-slate-400'
+                    view === 'text'
+                      ? 'bg-[#2a2a3f] text-slate-300'
+                      : 'text-slate-600 hover:text-slate-400'
                   }`}
                 >
                   <AlignLeft className="w-3 h-3" />
@@ -83,7 +94,9 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                 <button
                   onClick={() => setView('preview')}
                   className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] transition-all ${
-                    view === 'preview' ? 'bg-[#2a2a3f] text-slate-300' : 'text-slate-600 hover:text-slate-400'
+                    view === 'preview'
+                      ? 'bg-[#2a2a3f] text-slate-300'
+                      : 'text-slate-600 hover:text-slate-400'
                   }`}
                 >
                   <Eye className="w-3 h-3" />
@@ -113,14 +126,10 @@ export function MessageBubble({ message, onRegenerate }: Props) {
               <div className="flex items-center gap-1">
                 <span className={`text-xs ${isOverLimit ? 'text-red-400' : 'text-slate-600'}`}>
                   {charCount}
-                  {charLimit && (
-                    <span className="text-slate-700">/{charLimit}</span>
-                  )}
+                  {charLimit && <span className="text-slate-700">/{charLimit}</span>}
                   &nbsp;символов
                 </span>
-                {isOverLimit && (
-                  <span className="text-red-400 text-xs">· Превышен лимит</span>
-                )}
+                {isOverLimit && <span className="text-red-400 text-xs">· Превышен лимит</span>}
               </div>
               <div className="flex items-center gap-1">
                 {onRegenerate && (
@@ -139,11 +148,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleCopy}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs transition-all"
-                  style={
-                    copied
-                      ? { backgroundColor: `${color}20`, color }
-                      : { color: '#64748b' }
-                  }
+                  style={copied ? { backgroundColor: `${color}20`, color } : { color: '#64748b' }}
                 >
                   <AnimatePresence mode="wait">
                     {copied ? (
