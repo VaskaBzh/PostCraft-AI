@@ -28,61 +28,64 @@ export function useBulkGenerate() {
     }))
   }, [])
 
-  const generate = useCallback(async (prompt: string, platforms: Platform[]) => {
-    if (!prompt.trim() || platforms.length === 0) return
+  const generate = useCallback(
+    async (prompt: string, platforms: Platform[]) => {
+      if (!prompt.trim() || platforms.length === 0) return
 
-    abortRef.current = new AbortController()
-    const signal = abortRef.current.signal
+      abortRef.current = new AbortController()
+      const signal = abortRef.current.signal
 
-    const initial: BulkResults = {}
-    for (const p of platforms) initial[p] = { status: 'streaming', text: '' }
-    setResults(initial)
-    setIsRunning(true)
+      const initial: BulkResults = {}
+      for (const p of platforms) initial[p] = { status: 'streaming', text: '' }
+      setResults(initial)
+      setIsRunning(true)
 
-    await Promise.allSettled(
-      platforms.map(async (platform) => {
-        try {
-          const response = await fetch('/api/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal,
-            body: JSON.stringify({
-              prompt,
-              model: selectedModel,
-              settings: { ...settings, platform },
-            }),
-          })
+      await Promise.allSettled(
+        platforms.map(async (platform) => {
+          try {
+            const response = await fetch('/api/generate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              signal,
+              body: JSON.stringify({
+                prompt,
+                model: selectedModel,
+                settings: { ...settings, platform },
+              }),
+            })
 
-          if (!response.ok || !response.body) {
-            throw new Error(`HTTP ${response.status}`)
+            if (!response.ok || !response.body) {
+              throw new Error(`HTTP ${response.status}`)
+            }
+
+            const reader = response.body.getReader()
+            const decoder = new TextDecoder()
+            let text = ''
+
+            while (true) {
+              const { done, value } = await reader.read()
+              if (done) break
+              text += decoder.decode(value, { stream: true })
+              updateResult(platform, { text })
+            }
+
+            updateResult(platform, { status: 'done', text })
+          } catch (err) {
+            if (signal.aborted) {
+              updateResult(platform, { status: 'idle', text: '' })
+              return
+            }
+            const msg = err instanceof Error ? err.message : 'Ошибка'
+            console.warn('[bulk] error on platform:', platform, err)
+            updateResult(platform, { status: 'error', error: msg })
           }
+        })
+      )
 
-          const reader = response.body.getReader()
-          const decoder = new TextDecoder()
-          let text = ''
-
-          while (true) {
-            const { done, value } = await reader.read()
-            if (done) break
-            text += decoder.decode(value, { stream: true })
-            updateResult(platform, { text })
-          }
-
-          updateResult(platform, { status: 'done', text })
-        } catch (err) {
-          if (signal.aborted) {
-            updateResult(platform, { status: 'idle', text: '' })
-            return
-          }
-          const msg = err instanceof Error ? err.message : 'Ошибка'
-          console.warn('[bulk] error on platform:', platform, err)
-          updateResult(platform, { status: 'error', error: msg })
-        }
-      })
-    )
-
-    setIsRunning(false)
-  }, [settings, selectedModel, updateResult])
+      setIsRunning(false)
+    },
+    [settings, selectedModel, updateResult]
+  )
 
   const stop = useCallback(() => {
     abortRef.current?.abort()

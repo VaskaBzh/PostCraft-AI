@@ -35,14 +35,14 @@ Open **http://localhost:3000** in your browser.
 
 ### 1. Select a platform in the left panel
 
-| Platform | Character limit |
-|----------|----------------|
-| X / Twitter | 280 |
-| Instagram | 2,200 |
-| LinkedIn | 3,000 |
-| Facebook | no limit |
-| TikTok | 2,200 |
-| Telegram | no limit |
+| Platform    | Character limit |
+| ----------- | --------------- |
+| X / Twitter | 280             |
+| Instagram   | 2,200           |
+| LinkedIn    | 3,000           |
+| Facebook    | no limit        |
+| TikTok      | 2,200           |
+| Telegram    | no limit        |
 
 ### 2. Configure settings
 
@@ -55,6 +55,7 @@ Open **http://localhost:3000** in your browser.
 ### 3. Describe your idea and send
 
 Example prompts:
+
 - `Announce a new SaaS product focused on time savings`
 - `Motivational post for entrepreneurs after a setback`
 - `Promote a Python programming course`
@@ -90,15 +91,15 @@ User → ChatInput → useStreamingGenerate hook
 
 ### Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 15 App Router |
-| Language | TypeScript |
-| Styles | Tailwind CSS v4 |
-| Animations | Framer Motion |
-| Icons | Lucide React |
-| State | Zustand (persisted settings) |
-| AI | Anthropic SDK + Claude Opus 4.8 |
+| Layer      | Technology                      |
+| ---------- | ------------------------------- |
+| Framework  | Next.js 15 App Router           |
+| Language   | TypeScript                      |
+| Styles     | Tailwind CSS v4                 |
+| Animations | Framer Motion                   |
+| Icons      | Lucide React                    |
+| State      | Zustand (persisted settings)    |
+| AI         | Anthropic SDK + Claude Opus 4.8 |
 
 ### Key Files
 

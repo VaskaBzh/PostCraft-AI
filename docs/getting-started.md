@@ -4,10 +4,10 @@
 
 ## Требования
 
-| Зависимость | Версия |
-|-------------|--------|
-| Node.js | 18+ |
-| npm | 9+ |
+| Зависимость        | Версия                                                 |
+| ------------------ | ------------------------------------------------------ |
+| Node.js            | 18+                                                    |
+| npm                | 9+                                                     |
 | API-ключ Anthropic | [console.anthropic.com](https://console.anthropic.com) |
 
 ## Установка и запуск
@@ -52,15 +52,15 @@ npm run lint     # ESLint-проверка кода
 
 Альтернативно через Makefile (`make help` — список всех команд):
 
-| Команда | Описание |
-|---------|----------|
-| `make dev` | Запустить dev-сервер |
-| `make build` | Production-сборка в `dist/` |
-| `make preview` | Просмотр production-сборки |
-| `make lint` | Запустить ESLint |
-| `make typecheck` | TypeScript-проверка типов |
-| `make ci` | Полный CI-прогон (lint + typecheck + build) |
-| `make clean` | Очистить артефакты сборки |
+| Команда          | Описание                                    |
+| ---------------- | ------------------------------------------- |
+| `make dev`       | Запустить dev-сервер                        |
+| `make build`     | Production-сборка в `dist/`                 |
+| `make preview`   | Просмотр production-сборки                  |
+| `make lint`      | Запустить ESLint                            |
+| `make typecheck` | TypeScript-проверка типов                   |
+| `make ci`        | Полный CI-прогон (lint + typecheck + build) |
+| `make clean`     | Очистить артефакты сборки                   |
 
 ## Ручное тестирование
 

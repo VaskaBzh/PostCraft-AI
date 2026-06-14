@@ -35,6 +35,9 @@ skills-lock.json
 # Generated docs
 docs-html/
 
+# Local-only notes (not for version control)
+docs/local/
+
 # Test coverage output
 coverage/
 
@@ -42,6 +45,9 @@ coverage/
 test-results/
 playwright-report/
 .playwright/
+e2e/visual/layout.spec.ts-snapshots/
 
 # AI agent instructions (per-developer)
 AGENTS.md
+
+.vercel

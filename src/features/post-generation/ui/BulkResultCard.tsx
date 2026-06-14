@@ -3,7 +3,12 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Copy, Check, Loader2, AlertCircle } from 'lucide-react'
-import { PLATFORM_COLORS, PLATFORM_ICONS, CHAR_LIMITS, PLATFORMS } from '@/entities/platform/constants'
+import {
+  PLATFORM_COLORS,
+  PLATFORM_ICONS,
+  CHAR_LIMITS,
+  PLATFORMS,
+} from '@/entities/platform/constants'
 import type { Platform } from '@/entities/platform/types'
 import type { PlatformResult } from '@/features/post-generation/hooks/useBulkGenerate'
 
@@ -44,9 +49,7 @@ export function BulkResultCard({ platform, result }: Props) {
         {result.status === 'streaming' && (
           <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-500" />
         )}
-        {result.status === 'error' && (
-          <AlertCircle className="w-3.5 h-3.5 text-red-400" />
-        )}
+        {result.status === 'error' && <AlertCircle className="w-3.5 h-3.5 text-red-400" />}
       </div>
 
       {/* Body */}
@@ -54,7 +57,9 @@ export function BulkResultCard({ platform, result }: Props) {
         {result.status === 'error' ? (
           <p className="text-red-400 text-xs">❌ {result.error}</p>
         ) : result.text ? (
-          <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap">{result.text}</p>
+          <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap">
+            {result.text}
+          </p>
         ) : (
           <div className="flex items-center gap-2 text-slate-600 text-xs">
             <Loader2 className="w-3 h-3 animate-spin" />
@@ -67,7 +72,8 @@ export function BulkResultCard({ platform, result }: Props) {
       {result.text && result.status !== 'error' && (
         <div className="flex items-center justify-between px-3 py-2 border-t border-[#2a2a3f]">
           <span className={`text-[10px] ${overLimit ? 'text-red-400' : 'text-slate-600'}`}>
-            {result.text.length}{charLimit !== null ? ` / ${charLimit}` : ''} симв.
+            {result.text.length}
+            {charLimit === null ? '' : ` / ${charLimit}`} симв.
           </span>
           <button
             onClick={handleCopy}

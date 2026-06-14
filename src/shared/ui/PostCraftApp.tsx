@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { MessageSquare, Layers } from 'lucide-react'
-import { Sidebar } from './Sidebar'
 import { ChatInterface } from '@/features/post-generation/ui/ChatInterface'
 import { BulkGenerationView } from '@/features/post-generation/ui/BulkGenerationView'
+import { Sidebar } from './Sidebar'
 
 type Mode = 'chat' | 'bulk'
 
@@ -25,10 +25,12 @@ export function PostCraftApp() {
       <main className="flex-1 flex flex-col min-w-0">
         {/* Mode switcher */}
         <div className="flex-shrink-0 flex items-center gap-1 px-4 pt-3 pb-0">
-          {([
-            { id: 'chat' as Mode, label: 'Чат', icon: MessageSquare },
-            { id: 'bulk' as Mode, label: 'Все платформы', icon: Layers },
-          ] as const).map(({ id, label, icon: Icon }) => (
+          {(
+            [
+              { id: 'chat' as Mode, label: 'Чат', icon: MessageSquare },
+              { id: 'bulk' as Mode, label: 'Все платформы', icon: Layers },
+            ] as const
+          ).map(({ id, label, icon: Icon }) => (
             <motion.button
               key={id}
               whileTap={{ scale: 0.97 }}

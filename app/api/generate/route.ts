@@ -55,7 +55,12 @@ export async function POST(request: Request) {
 
     const selectedModel: ModelId = model ?? 'claude-opus-4-8'
 
-    console.log('[api/generate] request received, platform:', settings.platform, 'model:', selectedModel)
+    console.log(
+      '[api/generate] request received, platform:',
+      settings.platform,
+      'model:',
+      selectedModel
+    )
 
     const stream = client.messages.stream({
       model: selectedModel,
@@ -72,10 +77,7 @@ export async function POST(request: Request) {
         const encoder = new TextEncoder()
         try {
           for await (const event of stream) {
-            if (
-              event.type === 'content_block_delta' &&
-              event.delta.type === 'text_delta'
-            ) {
+            if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
               controller.enqueue(encoder.encode(event.delta.text))
             }
           }
