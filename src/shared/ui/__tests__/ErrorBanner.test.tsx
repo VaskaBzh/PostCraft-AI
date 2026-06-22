@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
-import { ErrorBanner } from '../ErrorBanner'
+import { ErrorBanner, parseErrorType } from '../ErrorBanner'
 
 describe('ErrorBanner', () => {
   it('renders error message', () => {
@@ -29,5 +29,71 @@ describe('ErrorBanner', () => {
       <ErrorBanner type="rate-limit" message="Too many" retryAfter={30} onDismiss={() => {}} />
     )
     expect(screen.getByText('30s')).toBeTruthy()
+  })
+
+  it('hides retry button during rate-limit countdown', () => {
+    const retry = vi.fn()
+    render(
+      <ErrorBanner
+        type="rate-limit"
+        message="Too many"
+        retryAfter={10}
+        onRetry={retry}
+        onDismiss={() => {}}
+      />
+    )
+    expect(screen.queryByText('Повторить')).toBeNull()
+  })
+
+  it('renders network error with correct icon styling', () => {
+    render(<ErrorBanner type="network" message="Offline" onDismiss={() => {}} />)
+    expect(screen.getByText('Offline')).toBeTruthy()
+  })
+
+  it('renders unknown error type', () => {
+    render(<ErrorBanner type="unknown" message="Something broke" onDismiss={() => {}} />)
+    expect(screen.getByText('Something broke')).toBeTruthy()
+  })
+})
+
+describe('parseErrorType', () => {
+  it('returns network type when offline', () => {
+    vi.stubGlobal('navigator', { ...navigator, onLine: false })
+    const result = parseErrorType(500, 'error')
+    expect(result.type).toBe('network')
+    vi.stubGlobal('navigator', { ...navigator, onLine: true })
+  })
+
+  it('returns rate-limit type for 429', () => {
+    const result = parseErrorType(429, 'retry-after: 30')
+    expect(result.type).toBe('rate-limit')
+    expect(result.retryAfter).toBe(30)
+  })
+
+  it('returns rate-limit with default retryAfter when no header', () => {
+    const result = parseErrorType(429, 'too many requests')
+    expect(result.type).toBe('rate-limit')
+    expect(result.retryAfter).toBe(60)
+  })
+
+  it('returns api type for 403', () => {
+    const result = parseErrorType(403, 'forbidden')
+    expect(result.type).toBe('api')
+  })
+
+  it('returns api type for 500+', () => {
+    const result = parseErrorType(502, 'bad gateway')
+    expect(result.type).toBe('api')
+  })
+
+  it('returns unknown for other statuses', () => {
+    const result = parseErrorType(0, 'fetch failed')
+    expect(result.type).toBe('unknown')
+    expect(result.displayMessage).toBe('fetch failed')
+  })
+
+  it('returns fallback message when empty', () => {
+    const result = parseErrorType(0, '')
+    expect(result.displayMessage).toBe('Неизвестная ошибка')
   })
 })
