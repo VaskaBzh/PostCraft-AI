@@ -1,5 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { Platform, Tone, Length, AppSettings, ModelId } from '@/entities/platform/types'
+import { rateLimit } from '@/shared/lib/rate-limit'
+import { validateOrigin } from '@/shared/lib/origin-check'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -47,6 +49,27 @@ function buildSystemPrompt(settings: AppSettings): string {
 
 export async function POST(request: Request) {
   try {
+    if (!validateOrigin(request)) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
+    const rl = await rateLimit(request)
+    if (!rl.success) {
+      return new Response(JSON.stringify({ error: 'Too many requests' }), {
+        status: 429,
+        headers: {
+          'Content-Type': 'application/json',
+          'Retry-After': String(Math.max(1, Math.ceil((rl.reset - Date.now()) / 1000))),
+          'X-RateLimit-Limit': String(rl.limit),
+          'X-RateLimit-Remaining': '0',
+          'X-RateLimit-Reset': String(rl.reset),
+        },
+      })
+    }
+
     const { prompt, settings, model } = (await request.json()) as {
       prompt: string
       settings: AppSettings
@@ -55,13 +78,6 @@ export async function POST(request: Request) {
 
     const selectedModel: ModelId = model ?? 'claude-opus-4-8'
 
-    console.log(
-      '[api/generate] request received, platform:',
-      settings.platform,
-      'model:',
-      selectedModel
-    )
-
     const stream = client.messages.stream({
       model: selectedModel,
       max_tokens: 1024,
@@ -69,8 +85,6 @@ export async function POST(request: Request) {
       system: buildSystemPrompt(settings),
       messages: [{ role: 'user', content: prompt }],
     })
-
-    console.log('[api/generate] stream started')
 
     const readableStream = new ReadableStream({
       async start(controller) {
@@ -95,6 +109,9 @@ export async function POST(request: Request) {
         'Content-Type': 'text/plain; charset=utf-8',
         'Transfer-Encoding': 'chunked',
         'X-Content-Type-Options': 'nosniff',
+        'X-RateLimit-Limit': String(rl.limit),
+        'X-RateLimit-Remaining': String(rl.remaining),
+        'X-RateLimit-Reset': String(rl.reset),
       },
     })
   } catch (err) {
