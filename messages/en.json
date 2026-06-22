@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "title": "PostCraft AI — Post Generator",
+    "description": "AI-powered social media post generator based on Claude"
+  },
+  "modes": {
+    "chat": "Chat",
+    "bulk": "All Platforms"
+  },
+  "sidebar": {
+    "platform": "Platform",
+    "tone": "Tone",
+    "length": "Length",
+    "options": "Options",
+    "hashtags": "Hashtags",
+    "emojis": "Emojis",
+    "language": "Language",
+    "model": "Model",
+    "export": "Export",
+    "import": "Import",
+    "importConfirm": "Import {count} messages? Current history will be replaced."
+  },
+  "tones": {
+    "professional": "Professional",
+    "casual": "Casual",
+    "humorous": "Humorous",
+    "inspirational": "Inspirational",
+    "bold": "Bold"
+  },
+  "tonesShort": {
+    "professional": "Prof.",
+    "casual": "Casual",
+    "humorous": "Humor",
+    "inspirational": "Inspir.",
+    "bold": "Bold"
+  },
+  "lengths": {
+    "short": "Short",
+    "medium": "Medium",
+    "long": "Long"
+  },
+  "models": {
+    "haiku": "Fast draft",
+    "sonnet": "Balanced",
+    "opus": "Maximum quality"
+  },
+  "chat": {
+    "title": "Post Generator",
+    "emptyTitle": "Ready to create posts",
+    "emptyDescription": "Describe a topic or idea — Claude will create a post tailored to the platform and tone",
+    "inputPlaceholder": "Describe a topic or idea for a post... (Ctrl+Enter to send)",
+    "inputHint": "Ctrl+Enter to send · Claude Opus 4.8 with streaming",
+    "quickPromptsTitle": "Quick prompts",
+    "saveAsTemplate": "Save as template",
+    "templateNamePlaceholder": "Template name...",
+    "streaming": "Generating...",
+    "textView": "Text",
+    "previewView": "Preview",
+    "charCount": "{count} characters",
+    "charCountWithLimit": "{count}/{limit} characters",
+    "overLimit": "Over limit",
+    "regenerate": "Regenerate",
+    "copied": "Copied!",
+    "copy": "Copy",
+    "copyMarkdown": "Copy Markdown",
+    "downloadTxt": "Download .txt"
+  },
+  "quickPrompts": {
+    "0": "New product announcement focusing on benefits",
+    "1": "Motivational post for entrepreneurs",
+    "2": "Post about IT industry trends",
+    "3": "Online course promotion",
+    "4": "Customer success story / case study",
+    "5": "Productivity tips post",
+    "6": "Event / webinar announcement",
+    "7": "Fun audience poll"
+  },
+  "examples": {
+    "twitter": {
+      "0": "Product launch in 280 chars",
+      "1": "Hot take on a trending topic",
+      "2": "Thread with tips"
+    },
+    "instagram": {
+      "0": "Brand story post",
+      "1": "Product photo caption",
+      "2": "Carousel with life hacks"
+    },
+    "linkedin": {
+      "0": "Company success case",
+      "1": "Thoughts on industry future",
+      "2": "Job posting announcement"
+    },
+    "facebook": {
+      "0": "Community news",
+      "1": "Audience poll",
+      "2": "Giveaway / contest"
+    },
+    "tiktok": {
+      "0": "Trending video description",
+      "1": "Viral video hook",
+      "2": "Educational content"
+    },
+    "telegram": {
+      "0": "Market analysis",
+      "1": "Breaking news",
+      "2": "Update announcement"
+    }
+  },
+  "bulk": {
+    "placeholder": "Describe a topic for posts across all platforms...",
+    "stop": "Stop",
+    "generate": "Generate for {count} platforms",
+    "emptyHint": "Enter a prompt and click \"Generate\"",
+    "generating": "Generating...",
+    "chars": "{count} chars",
+    "charsWithLimit": "{count} / {limit} chars",
+    "copied": "Copied",
+    "copy": "Copy"
+  },
+  "preview": {
+    "overLimit": "Over limit: {count}/{limit}",
+    "like": "Like",
+    "comment": "Comment",
+    "share": "Share",
+    "justNow": "Just now"
+  },
+  "templates": {
+    "title": "Templates",
+    "empty": "Save a prompt with the ↓ button in the input field",
+    "load": "Load",
+    "delete": "Delete"
+  },
+  "history": {
+    "title": "History",
+    "clear": "clear",
+    "search": "Search...",
+    "filters": "Filters",
+    "reset": "Reset",
+    "empty": "History is empty",
+    "noResults": "Nothing found",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "you": "you",
+    "ai": "ai"
+  },
+  "error": {
+    "retry": "Retry",
+    "network": "No internet connection",
+    "rateLimit": "Too many requests. Please wait.",
+    "forbidden": "Access denied. Check your settings.",
+    "server": "Server error. Try again later.",
+    "unknown": "Unknown error"
+  },
+  "network": {
+    "offline": "No internet connection. Generation is unavailable."
+  }
+}

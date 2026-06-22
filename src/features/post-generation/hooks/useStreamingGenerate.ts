@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { useStore } from '@/shared/model/store'
 import type { ErrorType } from '@/shared/ui/ErrorBanner'
 import { parseErrorType } from '@/shared/ui/ErrorBanner'
@@ -15,6 +16,15 @@ export function useStreamingGenerate() {
   const { settings, selectedModel, addMessage, updateLastMessage, setGenerating } = useStore()
   const [error, setError] = useState<StreamError | null>(null)
   const lastPromptRef = useRef<string>('')
+  const tError = useTranslations('error')
+
+  const errorTranslations = {
+    network: tError('network'),
+    rateLimit: tError('rateLimit'),
+    forbidden: tError('forbidden'),
+    server: tError('server'),
+    unknown: tError('unknown'),
+  }
 
   const generate = useCallback(
     async (userPrompt: string) => {
@@ -56,13 +66,13 @@ export function useStreamingGenerate() {
 
         if (!response.ok || !response.body) {
           const body = await response.text().catch(() => '')
-          const parsed = parseErrorType(response.status, body)
+          const parsed = parseErrorType(response.status, body, errorTranslations)
           setError({
             type: parsed.type,
             message: parsed.displayMessage,
             retryAfter: parsed.retryAfter,
           })
-          updateLastMessage(`❌ ${parsed.displayMessage}`, true)
+          updateLastMessage(`${parsed.displayMessage}`, true)
           return
         }
 
@@ -80,18 +90,18 @@ export function useStreamingGenerate() {
         updateLastMessage(fullText, true)
       } catch (err) {
         console.error('[generate] fetch error:', err)
-        const parsed = parseErrorType(0, err instanceof Error ? err.message : '')
+        const parsed = parseErrorType(0, err instanceof Error ? err.message : '', errorTranslations)
         setError({
           type: parsed.type,
           message: parsed.displayMessage,
           retryAfter: parsed.retryAfter,
         })
-        updateLastMessage(`❌ ${parsed.displayMessage}`, true)
+        updateLastMessage(`${parsed.displayMessage}`, true)
       } finally {
         setGenerating(false)
       }
     },
-    [settings, selectedModel, addMessage, updateLastMessage, setGenerating]
+    [settings, selectedModel, addMessage, updateLastMessage, setGenerating, errorTranslations]
   )
 
   const retry = useCallback(() => {

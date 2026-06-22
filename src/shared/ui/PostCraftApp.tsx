@@ -4,6 +4,7 @@ import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { MessageSquare, Layers } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { ChatInterface } from '@/features/post-generation/ui/ChatInterface'
 import { NetworkStatus } from './NetworkStatus'
 
@@ -31,6 +32,12 @@ type Mode = 'chat' | 'bulk'
 
 export function PostCraftApp() {
   const [mode, setMode] = useState<Mode>('chat')
+  const t = useTranslations('modes')
+
+  const modes = [
+    { id: 'chat' as Mode, label: t('chat'), icon: MessageSquare },
+    { id: 'bulk' as Mode, label: t('bulk'), icon: Layers },
+  ]
 
   return (
     <div className="h-screen bg-[#080810] flex overflow-hidden">
@@ -46,12 +53,7 @@ export function PostCraftApp() {
         <NetworkStatus />
         {/* Mode switcher */}
         <div className="flex-shrink-0 flex items-center gap-1 px-4 pt-3 pb-0">
-          {(
-            [
-              { id: 'chat' as Mode, label: 'Чат', icon: MessageSquare },
-              { id: 'bulk' as Mode, label: 'Все платформы', icon: Layers },
-            ] as const
-          ).map(({ id, label, icon: Icon }) => (
+          {modes.map(({ id, label, icon: Icon }) => (
             <motion.button
               key={id}
               whileTap={{ scale: 0.97 }}

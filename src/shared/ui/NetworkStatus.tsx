@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { WifiOff } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 function subscribe(callback: () => void) {
   window.addEventListener('online', callback)
@@ -23,6 +24,7 @@ function getServerSnapshot() {
 
 export function NetworkStatus() {
   const isOnline = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+  const t = useTranslations('network')
 
   return (
     <AnimatePresence>
@@ -34,7 +36,7 @@ export function NetworkStatus() {
           className="flex items-center gap-2 px-4 py-2 bg-orange-500/10 border-b border-orange-500/20 text-orange-400 text-xs"
         >
           <WifiOff className="w-3.5 h-3.5" />
-          <span>Нет подключения к интернету. Генерация недоступна.</span>
+          <span>{t('offline')}</span>
         </motion.div>
       )}
     </AnimatePresence>

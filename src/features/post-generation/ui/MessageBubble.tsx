@@ -13,6 +13,7 @@ import {
   ChevronDown,
   FileText,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { Message } from '@/entities/platform/types'
 import { PLATFORM_ICONS, PLATFORM_COLORS, CHAR_LIMITS } from '@/entities/platform/constants'
 import { formatAsMarkdown, copyToClipboard, downloadAsFile } from '@/shared/lib/export'
@@ -28,6 +29,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
   const [view, setView] = useState<'text' | 'preview'>('text')
   const [showExportMenu, setShowExportMenu] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
+  const t = useTranslations('chat')
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -116,7 +118,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                     style={{ animationDelay: '200ms' }}
                   />
                 </span>
-                Генерация...
+                {t('streaming')}
               </span>
             )}
             {/* Text / Preview toggle */}
@@ -131,7 +133,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                   }`}
                 >
                   <AlignLeft className="w-3 h-3" />
-                  Текст
+                  {t('textView')}
                 </button>
                 <button
                   onClick={() => setView('preview')}
@@ -142,7 +144,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                   }`}
                 >
                   <Eye className="w-3 h-3" />
-                  Превью
+                  {t('previewView')}
                 </button>
               </div>
             )}
@@ -167,11 +169,11 @@ export function MessageBubble({ message, onRegenerate }: Props) {
             <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#1e1e2e]">
               <div className="flex items-center gap-1">
                 <span className={`text-xs ${isOverLimit ? 'text-red-400' : 'text-slate-600'}`}>
-                  {charCount}
-                  {charLimit && <span className="text-slate-700">/{charLimit}</span>}
-                  &nbsp;символов
+                  {charLimit
+                    ? t('charCountWithLimit', { count: charCount, limit: charLimit })
+                    : t('charCount', { count: charCount })}
                 </span>
-                {isOverLimit && <span className="text-red-400 text-xs">· Превышен лимит</span>}
+                {isOverLimit && <span className="text-red-400 text-xs">· {t('overLimit')}</span>}
               </div>
               <div className="flex items-center gap-1">
                 {onRegenerate && (
@@ -182,7 +184,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-[#1e1e2e] transition-all text-xs"
                   >
                     <RefreshCw className="w-3 h-3" />
-                    Ещё раз
+                    {t('regenerate')}
                   </motion.button>
                 )}
                 <div className="relative" ref={exportRef}>
@@ -206,7 +208,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                             className="flex items-center gap-1"
                           >
                             <Check className="w-3 h-3" />
-                            Скопировано!
+                            {t('copied')}
                           </motion.span>
                         ) : (
                           <motion.span
@@ -217,7 +219,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                             className="flex items-center gap-1"
                           >
                             <Copy className="w-3 h-3" />
-                            Копировать
+                            {t('copy')}
                           </motion.span>
                         )}
                       </AnimatePresence>
@@ -242,14 +244,14 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                           className="flex items-center gap-2 w-full px-3 py-2 text-xs text-slate-400 hover:text-slate-200 hover:bg-[#2a2a3f] transition-all"
                         >
                           <FileText className="w-3 h-3" />
-                          Копировать Markdown
+                          {t('copyMarkdown')}
                         </button>
                         <button
                           onClick={handleDownload}
                           className="flex items-center gap-2 w-full px-3 py-2 text-xs text-slate-400 hover:text-slate-200 hover:bg-[#2a2a3f] transition-all"
                         >
                           <Download className="w-3 h-3" />
-                          Скачать .txt
+                          {t('downloadTxt')}
                         </button>
                       </motion.div>
                     )}

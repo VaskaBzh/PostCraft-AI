@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AlertTriangle, RefreshCw, X, WifiOff, Clock } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 export type ErrorType = 'api' | 'rate-limit' | 'network' | 'unknown'
 
@@ -17,6 +18,7 @@ interface Props {
 export function ErrorBanner({ type, message, retryAfter, onRetry, onDismiss }: Props) {
   const [countdown, setCountdown] = useState(() => retryAfter ?? 0)
   const intervalRef = useRef<ReturnType<typeof setInterval>>(null)
+  const t = useTranslations('error')
 
   useEffect(() => {
     if (type !== 'rate-limit' || !retryAfter) return
@@ -72,7 +74,7 @@ export function ErrorBanner({ type, message, retryAfter, onRetry, onDismiss }: P
             className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs hover:bg-white/10 transition-all"
           >
             <RefreshCw className="w-3 h-3" />
-            Повторить
+            {t('retry')}
           </button>
         )}
         <button onClick={onDismiss} className="p-1 hover:bg-white/10 rounded-lg transition-all">
@@ -85,21 +87,28 @@ export function ErrorBanner({ type, message, retryAfter, onRetry, onDismiss }: P
 
 export function parseErrorType(
   status: number,
-  message: string
+  message: string,
+  translations: {
+    network: string
+    rateLimit: string
+    forbidden: string
+    server: string
+    unknown: string
+  }
 ): { type: ErrorType; displayMessage: string; retryAfter?: number } {
   if (!navigator.onLine) {
-    return { type: 'network', displayMessage: 'Нет подключения к интернету' }
+    return { type: 'network', displayMessage: translations.network }
   }
   if (status === 429) {
     const retryMatch = message.match(/retry.after[:\s]*(\d+)/i)
     const retryAfter = retryMatch ? parseInt(retryMatch[1], 10) : 60
-    return { type: 'rate-limit', displayMessage: 'Слишком много запросов. Подождите.', retryAfter }
+    return { type: 'rate-limit', displayMessage: translations.rateLimit, retryAfter }
   }
   if (status === 403) {
-    return { type: 'api', displayMessage: 'Доступ запрещён. Проверьте настройки.' }
+    return { type: 'api', displayMessage: translations.forbidden }
   }
   if (status >= 500) {
-    return { type: 'api', displayMessage: 'Ошибка сервера. Попробуйте позже.' }
+    return { type: 'api', displayMessage: translations.server }
   }
-  return { type: 'unknown', displayMessage: message || 'Неизвестная ошибка' }
+  return { type: 'unknown', displayMessage: message || translations.unknown }
 }
