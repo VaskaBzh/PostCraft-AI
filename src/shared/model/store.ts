@@ -11,8 +11,9 @@ import type {
   ModelId,
   Template,
 } from '@/entities/platform/types'
+import { type AnalyticsSlice, initialAnalyticsState, estimateTokens } from './analytics'
 
-interface StoreState {
+interface StoreState extends AnalyticsSlice {
   messages: Message[]
   settings: AppSettings
   isGenerating: boolean
@@ -54,6 +55,8 @@ export const useStore = create<StoreState>()(
         includeEmojis: true,
         language: 'Русский',
       },
+
+      ...initialAnalyticsState,
 
       addMessage: (msg) =>
         set((s) => {
@@ -107,6 +110,17 @@ export const useStore = create<StoreState>()(
 
       loadPrompt: (prompt) => set({ pendingPrompt: prompt }),
       clearPendingPrompt: () => set({ pendingPrompt: null }),
+
+      trackGeneration: (platform, tone, model, charCount) =>
+        set((s) => ({
+          totalGenerations: s.totalGenerations + 1,
+          byPlatform: { ...s.byPlatform, [platform]: (s.byPlatform[platform] || 0) + 1 },
+          byTone: { ...s.byTone, [tone]: (s.byTone[tone] || 0) + 1 },
+          byModel: { ...s.byModel, [model]: (s.byModel[model] || 0) + 1 },
+          totalTokensEstimate: s.totalTokensEstimate + estimateTokens(charCount),
+        })),
+
+      resetAnalytics: () => set(initialAnalyticsState),
     }),
     {
       name: 'postcraft-store',
@@ -115,6 +129,11 @@ export const useStore = create<StoreState>()(
         selectedModel: s.selectedModel,
         templates: s.templates,
         messages: s.messages,
+        totalGenerations: s.totalGenerations,
+        byPlatform: s.byPlatform,
+        byTone: s.byTone,
+        byModel: s.byModel,
+        totalTokensEstimate: s.totalTokensEstimate,
       }),
     }
   )

@@ -13,7 +13,8 @@ interface StreamError {
 }
 
 export function useStreamingGenerate() {
-  const { settings, selectedModel, addMessage, updateLastMessage, setGenerating } = useStore()
+  const { settings, selectedModel, addMessage, updateLastMessage, setGenerating, trackGeneration } =
+    useStore()
   const [error, setError] = useState<StreamError | null>(null)
   const lastPromptRef = useRef<string>('')
   const tError = useTranslations('error')
@@ -88,6 +89,7 @@ export function useStreamingGenerate() {
         }
 
         updateLastMessage(fullText, true)
+        trackGeneration(platform, tone, selectedModel, fullText.length)
       } catch (err) {
         console.error('[generate] fetch error:', err)
         const parsed = parseErrorType(0, err instanceof Error ? err.message : '', errorTranslations)
@@ -101,7 +103,15 @@ export function useStreamingGenerate() {
         setGenerating(false)
       }
     },
-    [settings, selectedModel, addMessage, updateLastMessage, setGenerating, errorTranslations]
+    [
+      settings,
+      selectedModel,
+      addMessage,
+      updateLastMessage,
+      setGenerating,
+      trackGeneration,
+      errorTranslations,
+    ]
   )
 
   const retry = useCallback(() => {

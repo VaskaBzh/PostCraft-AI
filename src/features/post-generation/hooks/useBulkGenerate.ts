@@ -19,7 +19,7 @@ export function useBulkGenerate() {
   const [isRunning, setIsRunning] = useState(false)
   const abortRef = useRef<AbortController | null>(null)
 
-  const { settings, selectedModel } = useStore()
+  const { settings, selectedModel, trackGeneration } = useStore()
 
   const updateResult = useCallback((platform: Platform, patch: Partial<PlatformResult>) => {
     setResults((prev) => ({
@@ -70,6 +70,7 @@ export function useBulkGenerate() {
             }
 
             updateResult(platform, { status: 'done', text })
+            trackGeneration(platform, settings.tone, selectedModel, text.length)
           } catch (err) {
             if (signal.aborted) {
               updateResult(platform, { status: 'idle', text: '' })
@@ -84,7 +85,7 @@ export function useBulkGenerate() {
 
       setIsRunning(false)
     },
-    [settings, selectedModel, updateResult]
+    [settings, selectedModel, updateResult, trackGeneration]
   )
 
   const stop = useCallback(() => {

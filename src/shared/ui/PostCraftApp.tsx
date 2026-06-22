@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
-import { MessageSquare, Layers } from 'lucide-react'
+import { MessageSquare, Layers, BarChart2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { ChatInterface } from '@/features/post-generation/ui/ChatInterface'
 import { NetworkStatus } from './NetworkStatus'
@@ -28,7 +28,21 @@ const BulkGenerationView = dynamic(
   }
 )
 
-type Mode = 'chat' | 'bulk'
+const AnalyticsDashboard = dynamic(
+  () =>
+    import('@/features/analytics/ui/AnalyticsDashboard').then((m) => ({
+      default: m.AnalyticsDashboard,
+    })),
+  {
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center text-slate-600 text-sm">
+        Loading...
+      </div>
+    ),
+  }
+)
+
+type Mode = 'chat' | 'bulk' | 'analytics'
 
 export function PostCraftApp() {
   const [mode, setMode] = useState<Mode>('chat')
@@ -37,6 +51,7 @@ export function PostCraftApp() {
   const modes = [
     { id: 'chat' as Mode, label: t('chat'), icon: MessageSquare },
     { id: 'bulk' as Mode, label: t('bulk'), icon: Layers },
+    { id: 'analytics' as Mode, label: t('analytics'), icon: BarChart2 },
   ]
 
   return (
@@ -70,7 +85,9 @@ export function PostCraftApp() {
           ))}
         </div>
 
-        {mode === 'chat' ? <ChatInterface /> : <BulkGenerationView />}
+        {mode === 'chat' && <ChatInterface />}
+        {mode === 'bulk' && <BulkGenerationView />}
+        {mode === 'analytics' && <AnalyticsDashboard />}
       </main>
     </div>
   )

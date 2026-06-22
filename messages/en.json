@@ -5,7 +5,8 @@
   },
   "modes": {
     "chat": "Chat",
-    "bulk": "All Platforms"
+    "bulk": "All Platforms",
+    "analytics": "Analytics"
   },
   "sidebar": {
     "platform": "Platform",
@@ -154,5 +155,15 @@
   },
   "network": {
     "offline": "No internet connection. Generation is unavailable."
+  },
+  "analytics": {
+    "title": "Analytics",
+    "totalGenerations": "Generations",
+    "tokensEstimate": "Tokens (estimate)",
+    "byPlatform": "By platform",
+    "byTone": "By tone",
+    "byModel": "By model",
+    "noData": "No data yet. Generate your first post!",
+    "reset": "Reset stats"
   }
 }
