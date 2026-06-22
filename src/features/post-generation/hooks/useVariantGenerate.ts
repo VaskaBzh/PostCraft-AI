@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useStore } from '@/shared/model/store'
 
@@ -17,12 +17,14 @@ export function useVariantGenerate() {
   const { settings, selectedModel, trackGeneration } = useStore()
   const [variants, setVariants] = useState<VariantResult[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
+  const isGeneratingRef = useRef(false)
   const tTones = useTranslations('tones')
 
   const generateVariants = useCallback(
     async (prompt: string, count = 3) => {
-      if (!prompt.trim() || isGenerating) return
+      if (!prompt.trim() || isGeneratingRef.current) return
 
+      isGeneratingRef.current = true
       setIsGenerating(true)
       const groupId = crypto.randomUUID()
       const tones = VARIANT_TONES.slice(0, count)
@@ -93,9 +95,10 @@ export function useVariantGenerate() {
         }
       }
 
+      isGeneratingRef.current = false
       setIsGenerating(false)
     },
-    [settings, selectedModel, isGenerating, trackGeneration]
+    [settings, selectedModel, trackGeneration]
   )
 
   const clearVariants = useCallback(() => {

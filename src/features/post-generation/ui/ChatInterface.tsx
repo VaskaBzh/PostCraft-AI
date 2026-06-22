@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, MessageSquarePlus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useStore } from '@/shared/model/store'
+import { MODEL_OPTIONS } from '@/entities/platform/constants'
 import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
 import { ErrorBanner } from '@/shared/ui/ErrorBanner'
 import { MessageBubble } from './MessageBubble'
@@ -13,6 +14,7 @@ import { ChatInput } from './ChatInput'
 export function ChatInterface() {
   const messages = useStore((s) => s.messages)
   const settings = useStore((s) => s.settings)
+  const selectedModel = useStore((s) => s.selectedModel)
   const bottomRef = useRef<HTMLDivElement>(null)
   const { generate, error, retry, dismissError } = useStreamingGenerate()
   const t = useTranslations('chat')
@@ -37,7 +39,7 @@ export function ChatInterface() {
         </div>
         <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-[#12121e] border border-[#2a2a3f] rounded-full px-3 py-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          Claude Opus 4.8
+          Claude {MODEL_OPTIONS.find((m) => m.id === selectedModel)?.name ?? 'Opus'}
         </div>
       </div>
 

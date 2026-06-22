@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useStore } from '@/shared/model/store'
 import type { ErrorType } from '@/shared/ui/ErrorBanner'
@@ -18,18 +18,22 @@ export function useStreamingGenerate() {
   const [error, setError] = useState<StreamError | null>(null)
   const lastPromptRef = useRef<string>('')
   const tError = useTranslations('error')
-
-  const errorTranslations = {
-    network: tError('network'),
-    rateLimit: tError('rateLimit'),
-    forbidden: tError('forbidden'),
-    server: tError('server'),
-    unknown: tError('unknown'),
-  }
+  const tErrorRef = useRef(tError)
+  useEffect(() => {
+    tErrorRef.current = tError
+  }, [tError])
 
   const generate = useCallback(
     async (userPrompt: string) => {
       if (!userPrompt.trim()) return
+
+      const errorTranslations = {
+        network: tErrorRef.current('network'),
+        rateLimit: tErrorRef.current('rateLimit'),
+        forbidden: tErrorRef.current('forbidden'),
+        server: tErrorRef.current('server'),
+        unknown: tErrorRef.current('unknown'),
+      }
 
       lastPromptRef.current = userPrompt
       setError(null)
@@ -103,15 +107,7 @@ export function useStreamingGenerate() {
         setGenerating(false)
       }
     },
-    [
-      settings,
-      selectedModel,
-      addMessage,
-      updateLastMessage,
-      setGenerating,
-      trackGeneration,
-      errorTranslations,
-    ]
+    [settings, selectedModel, addMessage, updateLastMessage, setGenerating, trackGeneration]
   )
 
   const retry = useCallback(() => {
