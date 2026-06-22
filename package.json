@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.0",
+    "@serwist/next": "^9.5.11",
     "@tailwindcss/postcss": "^4.3.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
@@ -73,6 +74,7 @@
     "jsdom": "^29.1.1",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.4",
+    "serwist": "^9.5.11",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vitest": "^4.1.8"
