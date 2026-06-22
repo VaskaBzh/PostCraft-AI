@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { History, Search, Trash2, X } from 'lucide-react'
+import { History, Search, Trash2, X, Filter } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
-import type { Message } from '@/entities/platform/types'
+import type { Message, Platform, Tone } from '@/entities/platform/types'
 
 function groupByDate(messages: Message[]): { label: string; items: Message[] }[] {
   const today = new Date()
@@ -31,15 +31,46 @@ function groupByDate(messages: Message[]): { label: string; items: Message[] }[]
   return Array.from(map.entries()).map(([label, items]) => ({ label, items }))
 }
 
+const PLATFORM_LABELS: Record<Platform, string> = {
+  twitter: 'Twitter',
+  instagram: 'Instagram',
+  linkedin: 'LinkedIn',
+  facebook: 'Facebook',
+  tiktok: 'TikTok',
+  telegram: 'Telegram',
+}
+
+const TONE_LABELS: Record<Tone, string> = {
+  professional: 'Проф.',
+  casual: 'Casual',
+  humorous: 'Юмор',
+  inspirational: 'Вдохн.',
+  bold: 'Смелый',
+}
+
 export function HistoryPanel() {
   const { messages, clearMessages } = useStore()
   const [query, setQuery] = useState('')
+  const [platformFilter, setPlatformFilter] = useState<Platform | null>(null)
+  const [toneFilter, setToneFilter] = useState<Tone | null>(null)
+  const [showFilters, setShowFilters] = useState(false)
+
+  const hasActiveFilters = !!platformFilter || !!toneFilter
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return messages
-    const q = query.toLowerCase()
-    return messages.filter((m) => m.content.toLowerCase().includes(q))
-  }, [messages, query])
+    let result = messages
+    if (query.trim()) {
+      const q = query.toLowerCase()
+      result = result.filter((m) => m.content.toLowerCase().includes(q))
+    }
+    if (platformFilter) {
+      result = result.filter((m) => m.platform === platformFilter)
+    }
+    if (toneFilter) {
+      result = result.filter((m) => m.tone === toneFilter)
+    }
+    return result
+  }, [messages, query, platformFilter, toneFilter])
 
   const groups = useMemo(() => groupByDate(filtered), [filtered])
 
@@ -79,6 +110,77 @@ export function HistoryPanel() {
           )}
         </div>
       )}
+
+      {messages.length > 0 && (
+        <div className="flex items-center gap-1 mb-2">
+          <button
+            onClick={() => setShowFilters((v) => !v)}
+            className={`flex items-center gap-1 px-2 py-1 rounded-md text-[10px] transition-all ${
+              hasActiveFilters
+                ? 'bg-violet-500/20 text-violet-400'
+                : 'text-slate-600 hover:text-slate-400'
+            }`}
+          >
+            <Filter className="w-3 h-3" />
+            Фильтры
+          </button>
+          {hasActiveFilters && (
+            <button
+              onClick={() => {
+                setPlatformFilter(null)
+                setToneFilter(null)
+              }}
+              className="text-[10px] text-slate-600 hover:text-slate-400 px-1"
+            >
+              Сбросить
+            </button>
+          )}
+        </div>
+      )}
+
+      <AnimatePresence>
+        {showFilters && messages.length > 0 && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden mb-2"
+          >
+            <div className="space-y-1.5 p-2 bg-[#12121e] border border-[#2a2a3f] rounded-lg">
+              <div className="flex flex-wrap gap-1">
+                {(Object.entries(PLATFORM_LABELS) as [Platform, string][]).map(([id, label]) => (
+                  <button
+                    key={id}
+                    onClick={() => setPlatformFilter(platformFilter === id ? null : id)}
+                    className={`px-2 py-0.5 rounded-md text-[10px] transition-all ${
+                      platformFilter === id
+                        ? 'bg-violet-500/20 text-violet-400'
+                        : 'text-slate-600 hover:text-slate-400 bg-[#1e1e2e]'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {(Object.entries(TONE_LABELS) as [Tone, string][]).map(([id, label]) => (
+                  <button
+                    key={id}
+                    onClick={() => setToneFilter(toneFilter === id ? null : id)}
+                    className={`px-2 py-0.5 rounded-md text-[10px] transition-all ${
+                      toneFilter === id
+                        ? 'bg-blue-500/20 text-blue-400'
+                        : 'text-slate-600 hover:text-slate-400 bg-[#1e1e2e]'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {messages.length === 0 ? (
         <p className="text-slate-600 text-[11px] px-3 py-2">История пуста</p>

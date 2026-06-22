@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, MessageSquarePlus } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
 import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
+import { ErrorBanner } from '@/shared/ui/ErrorBanner'
 import { MessageBubble } from './MessageBubble'
 import { ChatInput } from './ChatInput'
 
@@ -29,7 +30,7 @@ export function ChatInterface() {
   const messages = useStore((s) => s.messages)
   const settings = useStore((s) => s.settings)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const { generate } = useStreamingGenerate()
+  const { generate, error, retry, dismissError } = useStreamingGenerate()
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -75,6 +76,17 @@ export function ChatInterface() {
         </AnimatePresence>
         <div ref={bottomRef} />
       </div>
+
+      {/* Error */}
+      {error && (
+        <ErrorBanner
+          type={error.type}
+          message={error.message}
+          retryAfter={error.retryAfter}
+          onRetry={retry}
+          onDismiss={dismissError}
+        />
+      )}
 
       {/* Input */}
       <ChatInput />

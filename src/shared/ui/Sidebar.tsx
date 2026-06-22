@@ -1,11 +1,13 @@
 'use client'
 
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Sparkles, Hash, Smile } from 'lucide-react'
+import { Sparkles, Hash, Smile, Upload, Download } from 'lucide-react'
 import { useStore } from '@/shared/model/store'
 import { PLATFORMS, TONES, LENGTHS, LANGUAGES, MODEL_OPTIONS } from '@/entities/platform/constants'
 import { TemplateLibrary } from '@/features/post-generation/ui/TemplateLibrary'
 import { HistoryPanel } from '@/features/post-generation/ui/HistoryPanel'
+import { exportHistory, importHistory } from '@/shared/lib/history-io'
 
 export function Sidebar() {
   const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, setModel } =
@@ -149,6 +151,7 @@ export function Sidebar() {
 
         {/* History */}
         <HistoryPanel />
+        <HistoryActions />
 
         {/* Model */}
         <section>
@@ -189,6 +192,60 @@ export function Sidebar() {
       {/* Bottom padding */}
       <div className="p-2 border-t border-[#1e1e2e]" />
     </aside>
+  )
+}
+
+function HistoryActions() {
+  const messages = useStore((s) => s.messages)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleExport = () => {
+    if (messages.length === 0) return
+    exportHistory(messages)
+  }
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    try {
+      const imported = await importHistory(file)
+      if (confirm(`Импортировать ${imported.length} сообщений? Текущая история будет заменена.`)) {
+        useStore.setState({ messages: imported })
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to import history')
+    }
+
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  if (messages.length === 0) return null
+
+  return (
+    <div className="flex gap-1 px-1">
+      <button
+        onClick={handleExport}
+        className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-slate-600 hover:text-slate-400 hover:bg-[#1a1a2e] transition-all"
+      >
+        <Download className="w-3 h-3" />
+        Экспорт
+      </button>
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-slate-600 hover:text-slate-400 hover:bg-[#1a1a2e] transition-all"
+      >
+        <Upload className="w-3 h-3" />
+        Импорт
+      </button>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json"
+        onChange={handleImport}
+        className="hidden"
+      />
+    </div>
   )
 }
 
