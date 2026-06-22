@@ -1,11 +1,31 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { MessageSquare, Layers } from 'lucide-react'
 import { ChatInterface } from '@/features/post-generation/ui/ChatInterface'
-import { BulkGenerationView } from '@/features/post-generation/ui/BulkGenerationView'
-import { Sidebar } from './Sidebar'
+import { NetworkStatus } from './NetworkStatus'
+
+const Sidebar = dynamic(() => import('./Sidebar').then((m) => ({ default: m.Sidebar })), {
+  loading: () => (
+    <div className="w-64 flex-shrink-0 bg-[#0e0e1a] border-r border-[#1e1e2e] animate-pulse" />
+  ),
+})
+
+const BulkGenerationView = dynamic(
+  () =>
+    import('@/features/post-generation/ui/BulkGenerationView').then((m) => ({
+      default: m.BulkGenerationView,
+    })),
+  {
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center text-slate-600 text-sm">
+        Loading...
+      </div>
+    ),
+  }
+)
 
 type Mode = 'chat' | 'bulk'
 
@@ -23,6 +43,7 @@ export function PostCraftApp() {
       <Sidebar />
 
       <main className="flex-1 flex flex-col min-w-0">
+        <NetworkStatus />
         {/* Mode switcher */}
         <div className="flex-shrink-0 flex items-center gap-1 px-4 pt-3 pb-0">
           {(
