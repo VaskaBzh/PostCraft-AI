@@ -76,6 +76,28 @@ localStorage → ключ "postcraft-store"
 Правила: писать ТОЛЬКО готовый пост, без вступлений.
 ```
 
+## Переменные окружения
+
+| Переменная                 | Обязательна | Описание                            |
+| -------------------------- | ----------- | ----------------------------------- |
+| `ANTHROPIC_API_KEY`        | Да          | API-ключ Anthropic для генерации    |
+| `UPSTASH_REDIS_REST_URL`   | Нет\*       | URL Upstash Redis для rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Нет\*       | Токен Upstash Redis                 |
+| `ALLOWED_ORIGINS`          | Нет         | Разрешённые origin'ы через запятую  |
+
+\* Rate limiting работает только при наличии обеих переменных Upstash. Без них — все запросы пропускаются (удобно для локальной разработки).
+
+`ALLOWED_ORIGINS` задаёт список доменов, с которых разрешены запросы к `/api/generate`. Если не указан, используются `VERCEL_URL` и `VERCEL_PROJECT_PRODUCTION_URL` (выставляются Vercel автоматически). В `development` режиме проверка origin отключена.
+
+Пример `.env.local`:
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+UPSTASH_REDIS_REST_URL=https://your-db.upstash.io
+UPSTASH_REDIS_REST_TOKEN=AXxx...
+ALLOWED_ORIGINS=https://post-craft-beta.vercel.app
+```
+
 ## See Also
 
 - [Быстрый старт](getting-started.md) — установка, запуск, первая генерация
