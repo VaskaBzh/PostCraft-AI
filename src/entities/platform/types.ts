@@ -29,6 +29,8 @@ export interface Message {
   tone: Tone
   timestamp: Date
   isStreaming?: boolean
+  variantGroup?: string
+  variantIndex?: number
 }
 
 export interface AppSettings {

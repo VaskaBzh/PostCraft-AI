@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
-import { MessageSquare, Layers, BarChart2 } from 'lucide-react'
+import { MessageSquare, Layers, BarChart2, FlaskConical } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { ChatInterface } from '@/features/post-generation/ui/ChatInterface'
 import { NetworkStatus } from './NetworkStatus'
@@ -28,6 +28,20 @@ const BulkGenerationView = dynamic(
   }
 )
 
+const VariantComparison = dynamic(
+  () =>
+    import('@/features/post-generation/ui/VariantComparison').then((m) => ({
+      default: m.VariantComparison,
+    })),
+  {
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center text-slate-600 text-sm">
+        Loading...
+      </div>
+    ),
+  }
+)
+
 const AnalyticsDashboard = dynamic(
   () =>
     import('@/features/analytics/ui/AnalyticsDashboard').then((m) => ({
@@ -42,7 +56,7 @@ const AnalyticsDashboard = dynamic(
   }
 )
 
-type Mode = 'chat' | 'bulk' | 'analytics'
+type Mode = 'chat' | 'bulk' | 'variants' | 'analytics'
 
 export function PostCraftApp() {
   const [mode, setMode] = useState<Mode>('chat')
@@ -51,6 +65,7 @@ export function PostCraftApp() {
   const modes = [
     { id: 'chat' as Mode, label: t('chat'), icon: MessageSquare },
     { id: 'bulk' as Mode, label: t('bulk'), icon: Layers },
+    { id: 'variants' as Mode, label: t('variants'), icon: FlaskConical },
     { id: 'analytics' as Mode, label: t('analytics'), icon: BarChart2 },
   ]
 
@@ -87,6 +102,7 @@ export function PostCraftApp() {
 
         {mode === 'chat' && <ChatInterface />}
         {mode === 'bulk' && <BulkGenerationView />}
+        {mode === 'variants' && <VariantComparison />}
         {mode === 'analytics' && <AnalyticsDashboard />}
       </main>
     </div>

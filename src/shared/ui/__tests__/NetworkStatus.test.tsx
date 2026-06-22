@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import { render } from '@/test/utils'
 import { NetworkStatus } from '../NetworkStatus'
 
 describe('NetworkStatus', () => {

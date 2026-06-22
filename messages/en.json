@@ -6,7 +6,8 @@
   "modes": {
     "chat": "Chat",
     "bulk": "All Platforms",
-    "analytics": "Analytics"
+    "analytics": "Analytics",
+    "variants": "A/B Variants"
   },
   "sidebar": {
     "platform": "Platform",
@@ -155,6 +156,17 @@
   },
   "network": {
     "offline": "No internet connection. Generation is unavailable."
+  },
+  "variants": {
+    "title": "A/B Variants",
+    "generate": "Generate variants",
+    "inputPlaceholder": "Describe a topic to compare post variants...",
+    "generating": "Generating variant {index}...",
+    "variant": "Variant {index}",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "clear": "Clear",
+    "emptyHint": "Enter a topic and click \"Generate variants\" for A/B comparison"
   },
   "analytics": {
     "title": "Analytics",
