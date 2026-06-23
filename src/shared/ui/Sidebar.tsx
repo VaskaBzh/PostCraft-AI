@@ -44,6 +44,7 @@ export function Sidebar() {
             {PLATFORMS.map(({ id, name, icon: Icon, color }) => (
               <motion.button
                 key={id}
+                data-testid={`platform-${id}`}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setPlatform(id)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${
@@ -76,6 +77,7 @@ export function Sidebar() {
             {TONES.map(({ id, emoji }) => (
               <motion.button
                 key={id}
+                data-testid={`tone-${id}`}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setTone(id)}
                 className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all ${

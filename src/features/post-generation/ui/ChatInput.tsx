@@ -129,6 +129,7 @@ export function ChatInput() {
           >
             <input
               ref={templateInputRef}
+              data-testid="template-name-input"
               value={templateName}
               onChange={(e) => setTemplateName(e.target.value)}
               onKeyDown={handleSaveKeyDown}
@@ -160,6 +161,7 @@ export function ChatInput() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowQuick((v) => !v)}
+          data-testid="quick-prompts-button"
           className={`flex-shrink-0 mb-1 p-2 rounded-xl transition-all ${
             showQuick
               ? 'bg-violet-600/20 text-violet-400 border border-violet-500/30'
@@ -173,6 +175,7 @@ export function ChatInput() {
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
+            data-testid="chat-input"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -184,6 +187,7 @@ export function ChatInput() {
           {value.trim() && (
             <button
               onClick={() => setShowSave((v) => !v)}
+              data-testid="save-template-button"
               title={t('saveAsTemplate')}
               className={`absolute right-3 bottom-3 p-0.5 rounded transition-all ${
                 showSave ? 'text-violet-400' : 'text-slate-600 hover:text-slate-400'

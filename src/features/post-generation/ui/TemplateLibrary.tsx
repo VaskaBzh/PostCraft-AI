@@ -61,6 +61,7 @@ export function TemplateLibrary() {
                 </div>
                 <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
+                    data-testid={`template-load-${tmpl.id}`}
                     onClick={() => handleLoad(tmpl)}
                     title={t('load')}
                     className="p-1 rounded text-slate-500 hover:text-violet-400 hover:bg-violet-500/10 transition-all"
@@ -68,6 +69,7 @@ export function TemplateLibrary() {
                     <Upload className="w-3 h-3" />
                   </button>
                   <button
+                    data-testid={`template-delete-${tmpl.id}`}
                     onClick={() => deleteTemplate(tmpl.id)}
                     title={t('delete')}
                     className="p-1 rounded text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all"

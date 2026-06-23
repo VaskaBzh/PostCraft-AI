@@ -34,6 +34,7 @@ export function BulkGenerationView() {
       {/* Input area */}
       <div className="p-4 border-b border-[#1e1e2e] flex-shrink-0">
         <textarea
+          data-testid="bulk-input"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder={t('placeholder')}
@@ -46,6 +47,7 @@ export function BulkGenerationView() {
           {PLATFORMS.map(({ id, name, icon: Icon, color }) => (
             <button
               key={id}
+              data-testid={`bulk-platform-${id}`}
               onClick={() => togglePlatform(id)}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-all border ${
                 selected.includes(id)
@@ -67,6 +69,7 @@ export function BulkGenerationView() {
         <div className="flex items-center gap-2 mt-3">
           <motion.button
             whileTap={{ scale: 0.97 }}
+            data-testid="bulk-generate-button"
             onClick={isRunning ? stop : handleGenerate}
             disabled={!isRunning && (!prompt.trim() || selected.length === 0)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed ${

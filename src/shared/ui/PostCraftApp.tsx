@@ -86,6 +86,7 @@ export function PostCraftApp() {
           {modes.map(({ id, label, icon: Icon }) => (
             <motion.button
               key={id}
+              data-testid={`mode-${id}`}
               whileTap={{ scale: 0.97 }}
               onClick={() => setMode(id)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all ${

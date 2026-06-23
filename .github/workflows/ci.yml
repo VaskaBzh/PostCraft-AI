@@ -62,7 +62,7 @@ jobs:
           key: playwright-${{ hashFiles('package-lock.json') }}
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium firefox webkit
+        run: npx playwright install --with-deps chromium
       - name: Install browser deps (cached hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps

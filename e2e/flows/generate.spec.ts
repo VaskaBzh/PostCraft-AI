@@ -5,12 +5,12 @@ test.describe('Post generation flow', () => {
   test.beforeEach(async ({ page }) => {
     await mockGenerateApi(page)
     await page.goto('/')
-    await page.locator('[data-testid="send-button"]').waitFor({ state: 'attached' })
+    await page.getByTestId('send-button').waitFor({ state: 'attached' })
   })
 
-  test('renders the app with textarea and send button', async ({ page }) => {
-    await expect(page.getByPlaceholder(/Опишите тему/)).toBeVisible()
-    await expect(page.getByText('PostCraft AI')).toBeVisible()
+  test('renders the app with input and send button', async ({ page }) => {
+    await expect(page.getByTestId('chat-input')).toBeVisible()
+    await expect(page.getByTestId('chat-title')).toBeVisible()
   })
 
   test('send button is disabled when textarea is empty', async ({ page }) => {
@@ -19,7 +19,7 @@ test.describe('Post generation flow', () => {
   })
 
   test('generates a post and shows it in chat', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Продвижение нового продукта')
     await page.getByTestId('send-button').click()
@@ -32,7 +32,7 @@ test.describe('Post generation flow', () => {
   })
 
   test('clears textarea after submission', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Тема для поста')
     await page.getByTestId('send-button').click()
@@ -41,7 +41,7 @@ test.describe('Post generation flow', () => {
   })
 
   test('send via Ctrl+Enter keyboard shortcut', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Горячая клавиша тест')
     await textarea.press('Control+Enter')
@@ -59,7 +59,7 @@ test.describe('Post generation flow', () => {
       await route.fulfill({ status: 200, contentType: 'text/plain', body: 'Ответ' })
     })
 
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Тест блокировки')
     await page.getByTestId('send-button').click()

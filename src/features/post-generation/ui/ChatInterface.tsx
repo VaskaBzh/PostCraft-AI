@@ -31,8 +31,10 @@ export function ChatInterface() {
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-[#1e1e2e]">
         <div>
-          <h1 className="text-white font-semibold text-sm">{t('title')}</h1>
-          <p className="text-slate-500 text-xs mt-0.5">
+          <h1 data-testid="chat-title" className="text-white font-semibold text-sm">
+            {t('title')}
+          </h1>
+          <p data-testid="chat-subtitle" className="text-slate-500 text-xs mt-0.5">
             {settings.platform.charAt(0).toUpperCase() + settings.platform.slice(1)} ·{' '}
             {tTones(settings.tone)} · {settings.language}
           </p>

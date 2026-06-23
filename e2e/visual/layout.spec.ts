@@ -12,7 +12,7 @@ test.describe('Visual regression', () => {
 
   test('sidebar with Twitter selected', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: 'X / Twitter' }).click()
+    await page.getByTestId('platform-twitter').click()
     await page.waitForLoadState('networkidle')
     await expect(page.locator('aside')).toHaveScreenshot('sidebar-twitter.png')
   })
@@ -20,9 +20,9 @@ test.describe('Visual regression', () => {
   test('chat with user and assistant messages', async ({ page }) => {
     await mockGenerateApi(page, 'Привет! Это демонстрационный пост для Instagram.')
     await page.goto('/')
-    await page.locator('[data-testid="send-button"]').waitFor({ state: 'attached' })
+    await page.getByTestId('send-button').waitFor({ state: 'attached' })
 
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Тема поста')
     await page.getByTestId('send-button').click()
@@ -34,9 +34,8 @@ test.describe('Visual regression', () => {
 
   test('bulk generation view initial state', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: 'Все платформы' }).click()
+    await page.getByTestId('mode-bulk').click()
     await page.waitForLoadState('networkidle')
-    // Generous threshold — framer-motion fade-in animation can be at different points
     await expect(page).toHaveScreenshot('bulk-view-initial.png', {
       fullPage: false,
       maxDiffPixels: 300,

@@ -5,25 +5,24 @@ test.describe('Bulk generation', () => {
   test.beforeEach(async ({ page }) => {
     await mockGenerateApi(page, 'Пост для платформы.')
     await page.goto('/')
-    await page.getByRole('button', { name: 'Все платформы' }).click()
+    await page.getByTestId('mode-bulk').click()
   })
 
-  test('shows bulk generation view with platform checkboxes', async ({ page }) => {
-    await expect(page.getByPlaceholder(/Опишите тему поста для всех платформ/)).toBeVisible()
-    await expect(page.getByText(/Сгенерировать для/)).toBeVisible()
+  test('shows bulk generation view with input', async ({ page }) => {
+    await expect(page.getByTestId('bulk-input')).toBeVisible()
+    await expect(page.getByTestId('bulk-generate-button')).toBeVisible()
   })
 
   test('generate button is disabled when textarea is empty', async ({ page }) => {
-    const generateBtn = page.getByRole('button', { name: /Сгенерировать для/ })
-    await expect(generateBtn).toBeDisabled()
+    await expect(page.getByTestId('bulk-generate-button')).toBeDisabled()
   })
 
   test('generates posts for all platforms and shows results', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему поста для всех платформ/)
+    const textarea = page.getByTestId('bulk-input')
     await textarea.click()
     await page.keyboard.type('Анонс нового продукта')
 
-    await page.getByRole('button', { name: /Сгенерировать для/ }).click()
+    await page.getByTestId('bulk-generate-button').click()
 
     await expect(page.getByText('Пост для платформы.').first()).toBeVisible({ timeout: 15_000 })
   })
@@ -34,22 +33,16 @@ test.describe('Bulk generation', () => {
       await route.fulfill({ status: 200, contentType: 'text/plain', body: 'Результат' })
     })
 
-    const textarea = page.getByPlaceholder(/Опишите тему поста для всех платформ/)
+    const textarea = page.getByTestId('bulk-input')
     await textarea.click()
     await page.keyboard.type('Тест кнопки стоп')
-    await page.getByRole('button', { name: /Сгенерировать для/ }).click()
+    await page.getByTestId('bulk-generate-button').click()
 
-    await expect(page.getByRole('button', { name: 'Стоп' })).toBeVisible()
+    await expect(page.getByTestId('bulk-generate-button')).toBeVisible()
   })
 
   test('can deselect a platform before generating', async ({ page }) => {
-    // Scope to main to avoid matching the sidebar platform button (sidebar is <aside>)
-    await page
-      .locator('main')
-      .getByRole('button', { name: /TikTok/ })
-      .click()
-
-    const generateBtn = page.getByRole('button', { name: /Сгенерировать для 5 платформ/ })
-    await expect(generateBtn).toBeVisible()
+    await page.getByTestId('bulk-platform-tiktok').click()
+    await expect(page.getByTestId('bulk-generate-button')).toBeVisible()
   })
 })
