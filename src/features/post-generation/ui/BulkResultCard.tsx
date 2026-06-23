@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Copy, Check, Loader2, AlertCircle } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import {
   PLATFORM_COLORS,
   PLATFORM_ICONS,
@@ -19,6 +20,7 @@ interface Props {
 
 export function BulkResultCard({ platform, result }: Props) {
   const [copied, setCopied] = useState(false)
+  const t = useTranslations('bulk')
 
   const color = PLATFORM_COLORS[platform] ?? '#6366f1'
   const Icon = PLATFORM_ICONS[platform]
@@ -55,7 +57,7 @@ export function BulkResultCard({ platform, result }: Props) {
       {/* Body */}
       <div className="flex-1 p-3 min-h-[80px]">
         {result.status === 'error' ? (
-          <p className="text-red-400 text-xs">❌ {result.error}</p>
+          <p className="text-red-400 text-xs">{result.error}</p>
         ) : result.text ? (
           <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap">
             {result.text}
@@ -63,7 +65,7 @@ export function BulkResultCard({ platform, result }: Props) {
         ) : (
           <div className="flex items-center gap-2 text-slate-600 text-xs">
             <Loader2 className="w-3 h-3 animate-spin" />
-            Генерация...
+            {t('generating')}
           </div>
         )}
       </div>
@@ -72,15 +74,16 @@ export function BulkResultCard({ platform, result }: Props) {
       {result.text && result.status !== 'error' && (
         <div className="flex items-center justify-between px-3 py-2 border-t border-[#2a2a3f]">
           <span className={`text-[10px] ${overLimit ? 'text-red-400' : 'text-slate-600'}`}>
-            {result.text.length}
-            {charLimit === null ? '' : ` / ${charLimit}`} симв.
+            {charLimit === null
+              ? t('chars', { count: result.text.length })
+              : t('charsWithLimit', { count: result.text.length, limit: charLimit })}
           </span>
           <button
             onClick={handleCopy}
             className="flex items-center gap-1 text-[10px] text-slate-500 hover:text-slate-300 transition-colors"
           >
             {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
-            {copied ? 'Скопировано' : 'Копировать'}
+            {copied ? t('copied') : t('copy')}
           </button>
         </div>
       )}

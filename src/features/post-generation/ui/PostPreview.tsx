@@ -1,6 +1,7 @@
 'use client'
 
 import { Heart, Repeat2, MessageCircle, ThumbsUp, Send } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { CHAR_LIMITS } from '@/entities/platform/constants'
 import type { Platform } from '@/entities/platform/types'
 
@@ -61,6 +62,7 @@ function InstagramPreview({ text }: { text: string }) {
 }
 
 function LinkedInPreview({ text }: { text: string }) {
+  const t = useTranslations('preview')
   return (
     <div className="bg-white rounded-2xl p-4 max-w-sm mx-auto shadow-lg text-black">
       <div className="flex items-center gap-2 mb-3">
@@ -73,13 +75,13 @@ function LinkedInPreview({ text }: { text: string }) {
       <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
       <div className="flex gap-4 mt-3 pt-3 border-t border-slate-200 text-slate-500">
         <button className="flex items-center gap-1 text-xs hover:text-blue-600">
-          <ThumbsUp className="w-3.5 h-3.5" /> Нравится
+          <ThumbsUp className="w-3.5 h-3.5" /> {t('like')}
         </button>
         <button className="flex items-center gap-1 text-xs hover:text-blue-600">
-          <MessageCircle className="w-3.5 h-3.5" /> Комментарий
+          <MessageCircle className="w-3.5 h-3.5" /> {t('comment')}
         </button>
         <button className="flex items-center gap-1 text-xs hover:text-blue-600">
-          <Send className="w-3.5 h-3.5" /> Поделиться
+          <Send className="w-3.5 h-3.5" /> {t('share')}
         </button>
       </div>
     </div>
@@ -100,25 +102,26 @@ function TelegramPreview({ text }: { text: string }) {
 }
 
 function FacebookPreview({ text }: { text: string }) {
+  const t = useTranslations('preview')
   return (
     <div className="bg-white rounded-2xl p-4 max-w-sm mx-auto shadow-lg text-black">
       <div className="flex items-center gap-2 mb-3">
         {AVATAR}
         <div>
           <div className="font-semibold text-sm">PostCraft User</div>
-          <div className="text-xs text-slate-500">Только что · 🌍</div>
+          <div className="text-xs text-slate-500">{t('justNow')} · 🌍</div>
         </div>
       </div>
       <p className="text-sm leading-relaxed whitespace-pre-wrap">{text}</p>
       <div className="flex gap-4 mt-3 pt-3 border-t border-slate-200 text-slate-500">
         <button className="flex items-center gap-1 text-xs hover:text-blue-600">
-          <ThumbsUp className="w-3.5 h-3.5" /> Нравится
+          <ThumbsUp className="w-3.5 h-3.5" /> {t('like')}
         </button>
         <button className="flex items-center gap-1 text-xs hover:text-blue-600">
-          <MessageCircle className="w-3.5 h-3.5" /> Комментарий
+          <MessageCircle className="w-3.5 h-3.5" /> {t('comment')}
         </button>
         <button className="flex items-center gap-1 text-xs hover:text-blue-600">
-          <Send className="w-3.5 h-3.5" /> Поделиться
+          <Send className="w-3.5 h-3.5" /> {t('share')}
         </button>
       </div>
     </div>
@@ -143,6 +146,7 @@ function TikTokPreview({ text }: { text: string }) {
 }
 
 export function PostPreview({ text, platform }: Props) {
+  const t = useTranslations('preview')
   const charLimit = CHAR_LIMITS[platform]
   const overLimit = charLimit !== null && text.length > charLimit
 
@@ -150,7 +154,7 @@ export function PostPreview({ text, platform }: Props) {
     <div className="w-full">
       {overLimit && (
         <p className="text-red-400 text-xs mb-2 text-center">
-          Превышен лимит: {text.length}/{charLimit}
+          {t('overLimit', { count: text.length, limit: charLimit })}
         </p>
       )}
       {platform === 'twitter' && <TwitterPreview text={text} />}

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Message } from '@/entities/platform/types'
 import { useStore } from './store'
+import { initialAnalyticsState } from './analytics'
 
 function makeMsg(overrides?: Partial<Message>): Message {
   return {
@@ -29,6 +30,7 @@ beforeEach(() => {
       includeEmojis: true,
       language: 'Русский',
     },
+    ...initialAnalyticsState,
   })
 })
 
@@ -156,5 +158,52 @@ describe('isGenerating', () => {
     expect(useStore.getState().isGenerating).toBe(true)
     useStore.getState().setGenerating(false)
     expect(useStore.getState().isGenerating).toBe(false)
+  })
+})
+
+describe('analytics - trackGeneration', () => {
+  it('increments totalGenerations', () => {
+    useStore.getState().trackGeneration('twitter', 'casual', 'claude-opus-4-8', 100)
+    expect(useStore.getState().totalGenerations).toBe(1)
+    useStore.getState().trackGeneration('instagram', 'bold', 'claude-haiku-4-5', 200)
+    expect(useStore.getState().totalGenerations).toBe(2)
+  })
+
+  it('increments platform counter', () => {
+    useStore.getState().trackGeneration('twitter', 'casual', 'claude-opus-4-8', 100)
+    useStore.getState().trackGeneration('twitter', 'bold', 'claude-opus-4-8', 50)
+    expect(useStore.getState().byPlatform.twitter).toBe(2)
+    expect(useStore.getState().byPlatform.instagram).toBe(0)
+  })
+
+  it('increments tone counter', () => {
+    useStore.getState().trackGeneration('twitter', 'humorous', 'claude-opus-4-8', 100)
+    expect(useStore.getState().byTone.humorous).toBe(1)
+  })
+
+  it('increments model counter', () => {
+    useStore.getState().trackGeneration('twitter', 'casual', 'claude-haiku-4-5', 100)
+    expect(useStore.getState().byModel['claude-haiku-4-5']).toBe(1)
+  })
+
+  it('accumulates token estimates', () => {
+    useStore.getState().trackGeneration('twitter', 'casual', 'claude-opus-4-8', 100)
+    useStore.getState().trackGeneration('twitter', 'casual', 'claude-opus-4-8', 200)
+    expect(useStore.getState().totalTokensEstimate).toBe(75)
+  })
+})
+
+describe('analytics - resetAnalytics', () => {
+  it('resets all counters to zero', () => {
+    useStore.getState().trackGeneration('twitter', 'casual', 'claude-opus-4-8', 100)
+    useStore.getState().trackGeneration('instagram', 'bold', 'claude-haiku-4-5', 200)
+    useStore.getState().resetAnalytics()
+
+    const state = useStore.getState()
+    expect(state.totalGenerations).toBe(0)
+    expect(state.totalTokensEstimate).toBe(0)
+    expect(state.byPlatform.twitter).toBe(0)
+    expect(state.byTone.casual).toBe(0)
+    expect(state.byModel['claude-opus-4-8']).toBe(0)
   })
 })

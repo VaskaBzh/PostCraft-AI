@@ -1,10 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Check, Send, RefreshCw, Eye, AlignLeft } from 'lucide-react'
+import {
+  Copy,
+  Check,
+  Send,
+  RefreshCw,
+  Eye,
+  AlignLeft,
+  Download,
+  ChevronDown,
+  FileText,
+} from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import type { Message } from '@/entities/platform/types'
 import { PLATFORM_ICONS, PLATFORM_COLORS, CHAR_LIMITS } from '@/entities/platform/constants'
+import { formatAsMarkdown, copyToClipboard, downloadAsFile } from '@/shared/lib/export'
 import { PostPreview } from './PostPreview'
 
 interface Props {
@@ -15,11 +27,43 @@ interface Props {
 export function MessageBubble({ message, onRegenerate }: Props) {
   const [copied, setCopied] = useState(false)
   const [view, setView] = useState<'text' | 'preview'>('text')
+  const [showExportMenu, setShowExportMenu] = useState(false)
+  const exportRef = useRef<HTMLDivElement>(null)
+  const t = useTranslations('chat')
 
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(message.content)
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) {
+        setShowExportMenu(false)
+      }
+    }
+    if (showExportMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showExportMenu])
+
+  const showCopiedFeedback = () => {
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleCopy = async () => {
+    const ok = await copyToClipboard(message.content)
+    if (ok) showCopiedFeedback()
+  }
+
+  const handleCopyMarkdown = async () => {
+    const md = formatAsMarkdown(message)
+    const ok = await copyToClipboard(md)
+    if (ok) showCopiedFeedback()
+    setShowExportMenu(false)
+  }
+
+  const handleDownload = () => {
+    const filename = `post-${message.platform}-${Date.now()}.txt`
+    downloadAsFile(message.content, filename)
+    setShowExportMenu(false)
   }
 
   if (message.role === 'user') {
@@ -74,7 +118,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                     style={{ animationDelay: '200ms' }}
                   />
                 </span>
-                Генерация...
+                {t('streaming')}
               </span>
             )}
             {/* Text / Preview toggle */}
@@ -89,7 +133,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                   }`}
                 >
                   <AlignLeft className="w-3 h-3" />
-                  Текст
+                  {t('textView')}
                 </button>
                 <button
                   onClick={() => setView('preview')}
@@ -100,7 +144,7 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                   }`}
                 >
                   <Eye className="w-3 h-3" />
-                  Превью
+                  {t('previewView')}
                 </button>
               </div>
             )}
@@ -125,11 +169,11 @@ export function MessageBubble({ message, onRegenerate }: Props) {
             <div className="flex items-center justify-between px-4 py-2.5 border-t border-[#1e1e2e]">
               <div className="flex items-center gap-1">
                 <span className={`text-xs ${isOverLimit ? 'text-red-400' : 'text-slate-600'}`}>
-                  {charCount}
-                  {charLimit && <span className="text-slate-700">/{charLimit}</span>}
-                  &nbsp;символов
+                  {charLimit
+                    ? t('charCountWithLimit', { count: charCount, limit: charLimit })
+                    : t('charCount', { count: charCount })}
                 </span>
-                {isOverLimit && <span className="text-red-400 text-xs">· Превышен лимит</span>}
+                {isOverLimit && <span className="text-red-400 text-xs">· {t('overLimit')}</span>}
               </div>
               <div className="flex items-center gap-1">
                 {onRegenerate && (
@@ -140,42 +184,79 @@ export function MessageBubble({ message, onRegenerate }: Props) {
                     className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-[#1e1e2e] transition-all text-xs"
                   >
                     <RefreshCw className="w-3 h-3" />
-                    Ещё раз
+                    {t('regenerate')}
                   </motion.button>
                 )}
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleCopy}
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs transition-all"
-                  style={copied ? { backgroundColor: `${color}20`, color } : { color: '#64748b' }}
-                >
-                  <AnimatePresence mode="wait">
-                    {copied ? (
-                      <motion.span
-                        key="check"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        className="flex items-center gap-1"
+                <div className="relative" ref={exportRef}>
+                  <div className="flex items-center">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={handleCopy}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-l-lg text-xs transition-all"
+                      style={
+                        copied ? { backgroundColor: `${color}20`, color } : { color: '#64748b' }
+                      }
+                    >
+                      <AnimatePresence mode="wait">
+                        {copied ? (
+                          <motion.span
+                            key="check"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            className="flex items-center gap-1"
+                          >
+                            <Check className="w-3 h-3" />
+                            {t('copied')}
+                          </motion.span>
+                        ) : (
+                          <motion.span
+                            key="copy"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            className="flex items-center gap-1"
+                          >
+                            <Copy className="w-3 h-3" />
+                            {t('copy')}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </motion.button>
+                    <button
+                      onClick={() => setShowExportMenu((v) => !v)}
+                      className="px-1 py-1.5 rounded-r-lg text-slate-500 hover:text-slate-300 hover:bg-[#1e1e2e] transition-all"
+                    >
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <AnimatePresence>
+                    {showExportMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        className="absolute right-0 bottom-full mb-1 bg-[#1e1e2e] border border-[#2a2a3f] rounded-lg shadow-xl overflow-hidden z-10 min-w-[160px]"
                       >
-                        <Check className="w-3 h-3" />
-                        Скопировано!
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="copy"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        className="flex items-center gap-1"
-                      >
-                        <Copy className="w-3 h-3" />
-                        Копировать
-                      </motion.span>
+                        <button
+                          onClick={handleCopyMarkdown}
+                          className="flex items-center gap-2 w-full px-3 py-2 text-xs text-slate-400 hover:text-slate-200 hover:bg-[#2a2a3f] transition-all"
+                        >
+                          <FileText className="w-3 h-3" />
+                          {t('copyMarkdown')}
+                        </button>
+                        <button
+                          onClick={handleDownload}
+                          className="flex items-center gap-2 w-full px-3 py-2 text-xs text-slate-400 hover:text-slate-200 hover:bg-[#2a2a3f] transition-all"
+                        >
+                          <Download className="w-3 h-3" />
+                          {t('downloadTxt')}
+                        </button>
+                      </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.button>
+                </div>
               </div>
             </div>
           )}

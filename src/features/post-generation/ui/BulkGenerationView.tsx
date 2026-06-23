@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Zap, Square } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { PLATFORMS } from '@/entities/platform/constants'
 import { useBulkGenerate } from '@/features/post-generation/hooks/useBulkGenerate'
 import { BulkResultCard } from '@/features/post-generation/ui/BulkResultCard'
@@ -14,6 +15,7 @@ export function BulkGenerationView() {
   const [prompt, setPrompt] = useState('')
   const [selected, setSelected] = useState<Platform[]>(ALL_PLATFORMS)
   const { results, isRunning, generate, stop, reset } = useBulkGenerate()
+  const t = useTranslations('bulk')
 
   const hasResults = Object.keys(results).length > 0
 
@@ -32,9 +34,10 @@ export function BulkGenerationView() {
       {/* Input area */}
       <div className="p-4 border-b border-[#1e1e2e] flex-shrink-0">
         <textarea
+          data-testid="bulk-input"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Опишите тему поста для всех платформ..."
+          placeholder={t('placeholder')}
           rows={3}
           className="w-full bg-[#12121e] border border-[#2a2a3f] text-white placeholder-slate-600 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:border-violet-500/50 transition-all"
         />
@@ -44,6 +47,7 @@ export function BulkGenerationView() {
           {PLATFORMS.map(({ id, name, icon: Icon, color }) => (
             <button
               key={id}
+              data-testid={`bulk-platform-${id}`}
               onClick={() => togglePlatform(id)}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-all border ${
                 selected.includes(id)
@@ -65,6 +69,7 @@ export function BulkGenerationView() {
         <div className="flex items-center gap-2 mt-3">
           <motion.button
             whileTap={{ scale: 0.97 }}
+            data-testid="bulk-generate-button"
             onClick={isRunning ? stop : handleGenerate}
             disabled={!isRunning && (!prompt.trim() || selected.length === 0)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
@@ -75,11 +80,11 @@ export function BulkGenerationView() {
           >
             {isRunning ? (
               <>
-                <Square className="w-4 h-4" /> Стоп
+                <Square className="w-4 h-4" /> {t('stop')}
               </>
             ) : (
               <>
-                <Zap className="w-4 h-4" /> Сгенерировать для {selected.length} платформ
+                <Zap className="w-4 h-4" /> {t('generate', { count: selected.length })}
               </>
             )}
           </motion.button>
@@ -109,7 +114,7 @@ export function BulkGenerationView() {
               className="flex flex-col items-center justify-center h-48 text-slate-600 text-sm"
             >
               <Zap className="w-8 h-8 mb-3 opacity-30" />
-              Введите промпт и нажмите «Сгенерировать»
+              {t('emptyHint')}
             </motion.div>
           )}
         </AnimatePresence>

@@ -1,7 +1,7 @@
 'use client'
 
 import { Send, AlignLeft, AlignCenter, AlignJustify, Zap, BarChart2, Sparkles } from 'lucide-react'
-import type { Platform, Tone, Length, ModelOption } from './types'
+import type { Platform, Tone, Length, ModelId, ModelOption } from './types'
 
 const TwitterIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
@@ -38,18 +38,18 @@ export const PLATFORMS: { id: Platform; name: string; icon: React.ElementType; c
   { id: 'telegram', name: 'Telegram', icon: Send, color: '#2AABEE' },
 ]
 
-export const TONES: { id: Tone; name: string; emoji: string }[] = [
-  { id: 'professional', name: 'Профессиональный', emoji: '💼' },
-  { id: 'casual', name: 'Casual', emoji: '😊' },
-  { id: 'humorous', name: 'Юмористический', emoji: '😄' },
-  { id: 'inspirational', name: 'Вдохновляющий', emoji: '🔥' },
-  { id: 'bold', name: 'Смелый', emoji: '⚡' },
+export const TONES: { id: Tone; emoji: string }[] = [
+  { id: 'professional', emoji: '💼' },
+  { id: 'casual', emoji: '😊' },
+  { id: 'humorous', emoji: '😄' },
+  { id: 'inspirational', emoji: '🔥' },
+  { id: 'bold', emoji: '⚡' },
 ]
 
-export const LENGTHS: { id: Length; label: string; icon: React.ElementType }[] = [
-  { id: 'short', label: 'Коротко', icon: AlignLeft },
-  { id: 'medium', label: 'Средне', icon: AlignCenter },
-  { id: 'long', label: 'Длинно', icon: AlignJustify },
+export const LENGTHS: { id: Length; icon: React.ElementType }[] = [
+  { id: 'short', icon: AlignLeft },
+  { id: 'medium', icon: AlignCenter },
+  { id: 'long', icon: AlignJustify },
 ]
 
 export const LANGUAGES = ['Русский', 'English', 'Español', 'Deutsch', 'Français', 'Italiano']
@@ -107,25 +107,31 @@ export const PLATFORM_ICONS: Record<string, React.ElementType> = {
   telegram: Send,
 }
 
-export const MODEL_OPTIONS: (ModelOption & { icon: React.ElementType })[] = [
+export const MODEL_OPTIONS: {
+  id: ModelId
+  name: string
+  descriptionKey: string
+  speed: ModelOption['speed']
+  icon: React.ElementType
+}[] = [
   {
     id: 'claude-haiku-4-5',
     name: 'Haiku',
-    description: 'Быстрый черновик',
+    descriptionKey: 'haiku',
     speed: 'fast',
     icon: Zap,
   },
   {
     id: 'claude-sonnet-4-6',
     name: 'Sonnet',
-    description: 'Сбалансированный',
+    descriptionKey: 'sonnet',
     speed: 'balanced',
     icon: BarChart2,
   },
   {
     id: 'claude-opus-4-8',
     name: 'Opus',
-    description: 'Максимальное качество',
+    descriptionKey: 'opus',
     speed: 'quality',
     icon: Sparkles,
   },

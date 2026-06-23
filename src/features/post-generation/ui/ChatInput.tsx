@@ -3,19 +3,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Loader2, Lightbulb, Bookmark, Check, X } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useStore } from '@/shared/model/store'
 import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
 
-const QUICK_PROMPTS = [
-  'Анонс нового продукта с акцентом на выгоды',
-  'Мотивационный пост для предпринимателей',
-  'Пост о трендах в IT-индустрии',
-  'Продвижение обучающего курса',
-  'История успеха клиента/кейс',
-  'Пост с советами по продуктивности',
-  'Анонс мероприятия/вебинара',
-  'Развлекательный опрос для аудитории',
-]
+const QUICK_PROMPT_COUNT = 8
 
 export function ChatInput() {
   const [value, setValue] = useState('')
@@ -28,6 +20,10 @@ export function ChatInput() {
   const isGenerating = useStore((s) => s.isGenerating)
   const { saveTemplate, settings } = useStore()
   const { generate } = useStreamingGenerate()
+  const t = useTranslations('chat')
+  const tPrompts = useTranslations('quickPrompts')
+
+  const quickPrompts = Array.from({ length: QUICK_PROMPT_COUNT }, (_, i) => tPrompts(String(i)))
 
   const applyPendingPrompt = useCallback((prompt: string) => {
     setValue(prompt)
@@ -107,7 +103,7 @@ export function ChatInput() {
             exit={{ opacity: 0, y: 8 }}
             className="mb-3 grid grid-cols-2 gap-1.5"
           >
-            {QUICK_PROMPTS.map((prompt) => (
+            {quickPrompts.map((prompt) => (
               <motion.button
                 key={prompt}
                 whileHover={{ scale: 1.01 }}
@@ -133,10 +129,11 @@ export function ChatInput() {
           >
             <input
               ref={templateInputRef}
+              data-testid="template-name-input"
               value={templateName}
               onChange={(e) => setTemplateName(e.target.value)}
               onKeyDown={handleSaveKeyDown}
-              placeholder="Название шаблона..."
+              placeholder={t('templateNamePlaceholder')}
               className="flex-1 bg-[#12121e] border border-violet-500/40 text-white placeholder-slate-600 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-violet-500 transition-all"
             />
             <button
@@ -164,12 +161,13 @@ export function ChatInput() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowQuick((v) => !v)}
+          data-testid="quick-prompts-button"
           className={`flex-shrink-0 mb-1 p-2 rounded-xl transition-all ${
             showQuick
               ? 'bg-violet-600/20 text-violet-400 border border-violet-500/30'
               : 'text-slate-500 hover:text-slate-300 hover:bg-[#1a1a2e]'
           }`}
-          title="Готовые промпты"
+          title={t('quickPromptsTitle')}
         >
           <Lightbulb className="w-5 h-5" />
         </motion.button>
@@ -177,10 +175,11 @@ export function ChatInput() {
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
+            data-testid="chat-input"
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Опишите тему или идею для поста... (Ctrl+Enter для отправки)"
+            placeholder={t('inputPlaceholder')}
             rows={1}
             disabled={isGenerating}
             className="w-full bg-[#12121e] border border-[#2a2a3f] text-white placeholder-slate-600 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/20 transition-all disabled:opacity-50 pr-12 leading-relaxed"
@@ -188,7 +187,8 @@ export function ChatInput() {
           {value.trim() && (
             <button
               onClick={() => setShowSave((v) => !v)}
-              title="Сохранить как шаблон"
+              data-testid="save-template-button"
+              title={t('saveAsTemplate')}
               className={`absolute right-3 bottom-3 p-0.5 rounded transition-all ${
                 showSave ? 'text-violet-400' : 'text-slate-600 hover:text-slate-400'
               }`}
@@ -230,9 +230,7 @@ export function ChatInput() {
         </motion.button>
       </div>
 
-      <p className="text-slate-700 text-[10px] mt-2 text-center">
-        Ctrl+Enter для отправки · Claude Opus 4.8 со стримингом
-      </p>
+      <p className="text-slate-700 text-[10px] mt-2 text-center">{t('inputHint')}</p>
     </div>
   )
 }

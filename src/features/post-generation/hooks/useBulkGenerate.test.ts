@@ -1,6 +1,7 @@
 import { renderHook, act, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useStore } from '@/shared/model/store'
+import { initialAnalyticsState } from '@/shared/model/analytics'
 import { useBulkGenerate } from './useBulkGenerate'
 
 function makeStream(chunks: string[]) {
@@ -31,6 +32,7 @@ beforeEach(() => {
       includeEmojis: true,
       language: 'Русский',
     },
+    ...initialAnalyticsState,
   })
 })
 

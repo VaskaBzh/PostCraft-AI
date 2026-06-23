@@ -2,8 +2,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { screen, fireEvent } from '@testing-library/react'
 import { render } from '@/test/utils'
 import { useStore } from '@/shared/model/store'
+import { initialAnalyticsState } from '@/shared/model/analytics'
 import { Sidebar } from './Sidebar'
 
+vi.mock('@/i18n/routing', () => ({
+  routing: { locales: ['ru', 'en'], defaultLocale: 'ru' },
+  useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
+  usePathname: () => '/',
+  Link: 'a',
+  redirect: vi.fn(),
+}))
 vi.mock('@/features/post-generation/ui/TemplateLibrary', () => ({
   TemplateLibrary: () => <div data-testid="template-library" />,
 }))
@@ -26,6 +34,7 @@ beforeEach(() => {
       includeEmojis: true,
       language: 'Русский',
     },
+    ...initialAnalyticsState,
   })
 })
 

@@ -3,33 +3,22 @@
 import { useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, MessageSquarePlus } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useStore } from '@/shared/model/store'
+import { MODEL_OPTIONS } from '@/entities/platform/constants'
 import { useStreamingGenerate } from '@/features/post-generation/hooks/useStreamingGenerate'
+import { ErrorBanner } from '@/shared/ui/ErrorBanner'
 import { MessageBubble } from './MessageBubble'
 import { ChatInput } from './ChatInput'
-
-const PLATFORM_LABELS: Record<string, string> = {
-  twitter: 'X / Twitter',
-  instagram: 'Instagram',
-  linkedin: 'LinkedIn',
-  facebook: 'Facebook',
-  tiktok: 'TikTok',
-  telegram: 'Telegram',
-}
-
-const TONE_LABELS: Record<string, string> = {
-  professional: 'Профессиональный',
-  casual: 'Casual',
-  humorous: 'Юмористический',
-  inspirational: 'Вдохновляющий',
-  bold: 'Смелый',
-}
 
 export function ChatInterface() {
   const messages = useStore((s) => s.messages)
   const settings = useStore((s) => s.settings)
+  const selectedModel = useStore((s) => s.selectedModel)
   const bottomRef = useRef<HTMLDivElement>(null)
-  const { generate } = useStreamingGenerate()
+  const { generate, error, retry, dismissError } = useStreamingGenerate()
+  const t = useTranslations('chat')
+  const tTones = useTranslations('tones')
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -42,15 +31,17 @@ export function ChatInterface() {
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-[#1e1e2e]">
         <div>
-          <h1 className="text-white font-semibold text-sm">Генератор постов</h1>
-          <p className="text-slate-500 text-xs mt-0.5">
-            {PLATFORM_LABELS[settings.platform]} · {TONE_LABELS[settings.tone]} ·{' '}
-            {settings.language}
+          <h1 data-testid="chat-title" className="text-white font-semibold text-sm">
+            {t('title')}
+          </h1>
+          <p data-testid="chat-subtitle" className="text-slate-500 text-xs mt-0.5">
+            {settings.platform.charAt(0).toUpperCase() + settings.platform.slice(1)} ·{' '}
+            {tTones(settings.tone)} · {settings.language}
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-[#12121e] border border-[#2a2a3f] rounded-full px-3 py-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-          Claude Opus 4.8
+          Claude {MODEL_OPTIONS.find((m) => m.id === selectedModel)?.name ?? 'Opus'}
         </div>
       </div>
 
@@ -76,6 +67,17 @@ export function ChatInterface() {
         <div ref={bottomRef} />
       </div>
 
+      {/* Error */}
+      {error && (
+        <ErrorBanner
+          type={error.type}
+          message={error.message}
+          retryAfter={error.retryAfter}
+          onRetry={retry}
+          onDismiss={dismissError}
+        />
+      )}
+
       {/* Input */}
       <ChatInput />
     </div>
@@ -83,16 +85,10 @@ export function ChatInterface() {
 }
 
 function EmptyState({ platform }: { platform: string }) {
-  const EXAMPLES: Record<string, string[]> = {
-    twitter: ['Анонс продукта за 280 символов', 'Острый комментарий к тренду', 'Тред с советами'],
-    instagram: ['Пост с историей бренда', 'Капшн к фото продукта', 'Карусель с лайфхаками'],
-    linkedin: ['Кейс успеха компании', 'Мысли о будущем индустрии', 'Анонс вакансии'],
-    facebook: ['Новость для сообщества', 'Опрос аудитории', 'Розыгрыш/конкурс'],
-    tiktok: ['Описание к видео с трендом', 'Хук для вирусного ролика', 'Образовательный контент'],
-    telegram: ['Аналитика рынка', 'Срочная новость', 'Анонс обновления'],
-  }
+  const t = useTranslations('chat')
+  const tExamples = useTranslations('examples')
 
-  const examples = EXAMPLES[platform] || []
+  const examples = [0, 1, 2].map((i) => tExamples(`${platform}.${i}`))
 
   return (
     <motion.div
@@ -105,10 +101,8 @@ function EmptyState({ platform }: { platform: string }) {
       <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600/20 to-blue-600/20 border border-violet-500/20 flex items-center justify-center mb-4">
         <Sparkles className="w-7 h-7 text-violet-400" />
       </div>
-      <h2 className="text-white font-semibold mb-2">Готов к созданию постов</h2>
-      <p className="text-slate-500 text-sm max-w-xs mb-6">
-        Опишите тему или идею — Claude создаст пост с учётом платформы и тона
-      </p>
+      <h2 className="text-white font-semibold mb-2">{t('emptyTitle')}</h2>
+      <p className="text-slate-500 text-sm max-w-xs mb-6">{t('emptyDescription')}</p>
       <div className="space-y-2 w-full max-w-sm">
         {examples.map((ex) => (
           <motion.div

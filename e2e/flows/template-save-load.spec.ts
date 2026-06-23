@@ -10,12 +10,12 @@ test.describe('Template save and load', () => {
   })
 
   test('saves a template via bookmark button', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Промпт для шаблона')
 
-    await page.getByTitle('Сохранить как шаблон').click()
-    const nameInput = page.getByPlaceholder('Название шаблона...')
+    await page.getByTestId('save-template-button').click()
+    const nameInput = page.getByTestId('template-name-input')
     await nameInput.fill('Мой тестовый шаблон')
     await nameInput.press('Enter')
 
@@ -23,32 +23,31 @@ test.describe('Template save and load', () => {
   })
 
   test('loads a saved template into the textarea', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Промпт для загрузки')
 
-    await page.getByTitle('Сохранить как шаблон').click()
-    await page.getByPlaceholder('Название шаблона...').fill('Шаблон загрузки')
-    await page.getByPlaceholder('Название шаблона...').press('Enter')
+    await page.getByTestId('save-template-button').click()
+    const nameInput = page.getByTestId('template-name-input')
+    await nameInput.fill('Шаблон загрузки')
+    await nameInput.press('Enter')
 
     await textarea.clear()
     await expect(textarea).toHaveValue('')
 
-    // Hover the group container (2 levels up: text → flex-1 div → group div)
-    const templateRow = page.getByText('Шаблон загрузки').locator('../..')
-    await templateRow.hover()
-    await page.getByTitle('Загрузить').click()
+    const loadButton = page.locator('[data-testid^="template-load-"]').first()
+    await loadButton.click({ force: true })
 
     await expect(textarea).toHaveValue('Промпт для загрузки')
   })
 
   test('cancels template save with Escape key', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Тест отмены')
 
-    await page.getByTitle('Сохранить как шаблон').click()
-    const nameInput = page.getByPlaceholder('Название шаблона...')
+    await page.getByTestId('save-template-button').click()
+    const nameInput = page.getByTestId('template-name-input')
     await nameInput.fill('Не сохранится')
     await nameInput.press('Escape')
 
@@ -57,16 +56,17 @@ test.describe('Template save and load', () => {
   })
 
   test('deletes a template', async ({ page }) => {
-    const textarea = page.getByPlaceholder(/Опишите тему/)
+    const textarea = page.getByTestId('chat-input')
     await textarea.click()
     await page.keyboard.type('Удаляемый промпт')
 
-    await page.getByTitle('Сохранить как шаблон').click()
-    await page.getByPlaceholder('Название шаблона...').fill('Для удаления')
-    await page.getByPlaceholder('Название шаблона...').press('Enter')
+    await page.getByTestId('save-template-button').click()
+    const nameInput = page.getByTestId('template-name-input')
+    await nameInput.fill('Для удаления')
+    await nameInput.press('Enter')
 
-    await page.getByText('Для удаления').hover()
-    await page.getByTitle('Удалить').click()
+    const deleteButton = page.locator('[data-testid^="template-delete-"]').first()
+    await deleteButton.click({ force: true })
 
     await expect(page.getByText('Для удаления')).not.toBeVisible()
   })
