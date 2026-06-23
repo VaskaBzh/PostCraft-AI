@@ -20,7 +20,7 @@ function makeStream(chunks: string[]) {
 }
 
 function wrapper({ children }: { children: React.ReactNode }) {
-  return createElement(NextIntlClientProvider, { locale: 'ru', messages }, children)
+  return createElement(NextIntlClientProvider, { locale: 'ru', messages, children })
 }
 
 beforeEach(() => {
