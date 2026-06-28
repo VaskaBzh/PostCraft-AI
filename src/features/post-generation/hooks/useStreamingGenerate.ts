@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { useStore } from '@/shared/model/store'
 import type { ErrorType } from '@/shared/ui/ErrorBanner'
 import { parseErrorType } from '@/shared/ui/ErrorBanner'
@@ -15,6 +16,7 @@ export function useStreamingGenerate() {
   const { settings, selectedModel, addMessage, updateLastMessage, setGenerating } = useStore()
   const [error, setError] = useState<StreamError | null>(null)
   const lastPromptRef = useRef<string>('')
+  const t = useTranslations('error')
 
   const generate = useCallback(
     async (userPrompt: string) => {
@@ -22,6 +24,14 @@ export function useStreamingGenerate() {
 
       lastPromptRef.current = userPrompt
       setError(null)
+
+      const errorMessages = {
+        network: t('network'),
+        rateLimit: t('rateLimit'),
+        forbidden: t('forbidden'),
+        server: t('server'),
+        unknown: t('unknown'),
+      }
 
       const { platform, tone } = settings
 
@@ -56,7 +66,7 @@ export function useStreamingGenerate() {
 
         if (!response.ok || !response.body) {
           const body = await response.text().catch(() => '')
-          const parsed = parseErrorType(response.status, body)
+          const parsed = parseErrorType(response.status, body, errorMessages)
           setError({
             type: parsed.type,
             message: parsed.displayMessage,
@@ -80,7 +90,7 @@ export function useStreamingGenerate() {
         updateLastMessage(fullText, true)
       } catch (err) {
         console.error('[generate] fetch error:', err)
-        const parsed = parseErrorType(0, err instanceof Error ? err.message : '')
+        const parsed = parseErrorType(0, err instanceof Error ? err.message : '', errorMessages)
         setError({
           type: parsed.type,
           message: parsed.displayMessage,
@@ -91,7 +101,8 @@ export function useStreamingGenerate() {
         setGenerating(false)
       }
     },
-    [settings, selectedModel, addMessage, updateLastMessage, setGenerating]
+     
+    [settings, selectedModel, addMessage, updateLastMessage, setGenerating, t]
   )
 
   const retry = useCallback(() => {

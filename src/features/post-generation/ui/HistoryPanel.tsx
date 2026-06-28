@@ -3,16 +3,22 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { History, Search, Trash2, X, Filter } from 'lucide-react'
+import { useTranslations, useLocale } from 'next-intl'
 import { useStore } from '@/shared/model/store'
 import type { Message, Platform, Tone } from '@/entities/platform/types'
 
-function groupByDate(messages: Message[]): { label: string; items: Message[] }[] {
+function groupByDate(
+  messages: Message[],
+  todayLabel: string,
+  yesterdayLabel: string,
+  locale: string
+): { label: string; items: Message[] }[] {
   const today = new Date()
   const yesterday = new Date(today)
   yesterday.setDate(today.getDate() - 1)
 
   const fmt = (d: Date) =>
-    d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' })
 
   const isSameDay = (a: Date, b: Date) =>
     a.getDate() === b.getDate() &&
@@ -23,7 +29,11 @@ function groupByDate(messages: Message[]): { label: string; items: Message[] }[]
 
   for (const msg of messages) {
     const d = new Date(msg.timestamp)
-    const label = isSameDay(d, today) ? 'Сегодня' : isSameDay(d, yesterday) ? 'Вчера' : fmt(d)
+    const label = isSameDay(d, today)
+      ? todayLabel
+      : isSameDay(d, yesterday)
+        ? yesterdayLabel
+        : fmt(d)
     if (!map.has(label)) map.set(label, [])
     map.get(label)!.push(msg)
   }
@@ -40,22 +50,25 @@ const PLATFORM_LABELS: Record<Platform, string> = {
   telegram: 'Telegram',
 }
 
-const TONE_LABELS: Record<Tone, string> = {
-  professional: 'Проф.',
-  casual: 'Casual',
-  humorous: 'Юмор',
-  inspirational: 'Вдохн.',
-  bold: 'Смелый',
-}
-
 export function HistoryPanel() {
   const { messages, clearMessages } = useStore()
   const [query, setQuery] = useState('')
   const [platformFilter, setPlatformFilter] = useState<Platform | null>(null)
   const [toneFilter, setToneFilter] = useState<Tone | null>(null)
   const [showFilters, setShowFilters] = useState(false)
+  const t = useTranslations('history')
+  const tc = useTranslations('chat')
+  const locale = useLocale()
 
   const hasActiveFilters = !!platformFilter || !!toneFilter
+
+  const TONE_LABELS: Record<Tone, string> = {
+    professional: tc('tonesShort.professional'),
+    casual: tc('tonesShort.casual'),
+    humorous: tc('tonesShort.humorous'),
+    inspirational: tc('tonesShort.inspirational'),
+    bold: tc('tonesShort.bold'),
+  }
 
   const filtered = useMemo(() => {
     let result = messages
@@ -72,21 +85,24 @@ export function HistoryPanel() {
     return result
   }, [messages, query, platformFilter, toneFilter])
 
-  const groups = useMemo(() => groupByDate(filtered), [filtered])
+  const groups = useMemo(
+    () => groupByDate(filtered, t('today'), t('yesterday'), locale),
+    [filtered, t, locale]
+  )
 
   return (
     <section>
       <div className="flex items-center justify-between px-1 mb-2">
         <label className="text-slate-500 text-[10px] uppercase tracking-widest flex items-center gap-1.5">
           <History className="w-3 h-3" />
-          История
+          {t('label')}
         </label>
         {messages.length > 0 && (
           <button
             onClick={clearMessages}
             className="text-[10px] text-slate-600 hover:text-red-400 transition-colors"
           >
-            очистить
+            {t('clear')}
           </button>
         )}
       </div>
@@ -97,7 +113,7 @@ export function HistoryPanel() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Поиск..."
+            placeholder={t('search')}
             className="w-full bg-[#12121e] border border-[#2a2a3f] text-slate-300 placeholder-slate-600 text-[11px] rounded-lg pl-7 pr-7 py-1.5 focus:outline-none focus:border-violet-500/40 transition-all"
           />
           {query && (
@@ -122,7 +138,7 @@ export function HistoryPanel() {
             }`}
           >
             <Filter className="w-3 h-3" />
-            Фильтры
+            {t('filters')}
           </button>
           {hasActiveFilters && (
             <button
@@ -132,7 +148,7 @@ export function HistoryPanel() {
               }}
               className="text-[10px] text-slate-600 hover:text-slate-400 px-1"
             >
-              Сбросить
+              {t('reset')}
             </button>
           )}
         </div>
@@ -183,9 +199,9 @@ export function HistoryPanel() {
       </AnimatePresence>
 
       {messages.length === 0 ? (
-        <p className="text-slate-600 text-[11px] px-3 py-2">История пуста</p>
+        <p className="text-slate-600 text-[11px] px-3 py-2">{t('empty')}</p>
       ) : groups.length === 0 ? (
-        <p className="text-slate-600 text-[11px] px-3 py-2">Ничего не найдено</p>
+        <p className="text-slate-600 text-[11px] px-3 py-2">{t('notFound')}</p>
       ) : (
         <div className="space-y-3 max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-[#2a2a3f] scrollbar-track-transparent pr-1">
           <AnimatePresence initial={false}>
@@ -205,7 +221,7 @@ export function HistoryPanel() {
                     <span
                       className={`text-[9px] mt-0.5 flex-shrink-0 ${msg.role === 'user' ? 'text-violet-500' : 'text-slate-600'}`}
                     >
-                      {msg.role === 'user' ? 'ты' : 'ai'}
+                      {msg.role === 'user' ? t('roleUser') : t('roleAi')}
                     </span>
                     <span className="text-[11px] text-slate-400 line-clamp-2 flex-1 leading-relaxed">
                       {msg.content}

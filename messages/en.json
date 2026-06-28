@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "title": "PostCraft AI — Post Generator",
+    "description": "AI-powered social media post generator built on Claude"
+  },
+  "sidebar": {
+    "platform": "Platform",
+    "tone": "Tone",
+    "length": "Length",
+    "options": "Options",
+    "contentLanguage": "Response language",
+    "model": "Model",
+    "hashtags": "Hashtags",
+    "emojis": "Emojis",
+    "export": "Export",
+    "import": "Import",
+    "uiLanguage": "Interface language",
+    "importConfirm": "Import {count} messages? Current history will be replaced."
+  },
+  "templates": {
+    "label": "Templates",
+    "hint": "Save a prompt using the ↓ button in the input field",
+    "load": "Load",
+    "delete": "Delete"
+  },
+  "history": {
+    "label": "History",
+    "clear": "clear",
+    "search": "Search...",
+    "filters": "Filters",
+    "reset": "Reset",
+    "empty": "History is empty",
+    "notFound": "Nothing found",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "roleUser": "you",
+    "roleAi": "ai"
+  },
+  "chat": {
+    "title": "Post Generator",
+    "generating": "Generating...",
+    "tones": {
+      "professional": "Professional",
+      "casual": "Casual",
+      "humorous": "Humorous",
+      "inspirational": "Inspirational",
+      "bold": "Bold"
+    },
+    "tonesShort": {
+      "professional": "Prof.",
+      "casual": "Casual",
+      "humorous": "Humor",
+      "inspirational": "Inspr.",
+      "bold": "Bold"
+    }
+  },
+  "empty": {
+    "title": "Ready to create posts",
+    "subtitle": "Describe a topic or idea — Claude will craft a post tailored to the platform and tone",
+    "examples": {
+      "twitter": [
+        "Product announcement in 280 chars",
+        "Sharp take on a trending topic",
+        "Tips thread"
+      ],
+      "instagram": ["Brand story post", "Product photo caption", "Lifehack carousel"],
+      "linkedin": [
+        "Company success case study",
+        "Thoughts on the industry's future",
+        "Job opening announcement"
+      ],
+      "facebook": ["Community news update", "Audience poll", "Giveaway / contest"],
+      "tiktok": ["Trending video description", "Hook for a viral clip", "Educational content"],
+      "telegram": ["Market analysis", "Breaking news", "Update announcement"]
+    }
+  },
+  "input": {
+    "placeholder": "Describe a topic or idea for your post... (Ctrl+Enter to send)",
+    "hint": "Ctrl+Enter to send · Claude Opus 4.8 with streaming",
+    "templateNamePlaceholder": "Template name...",
+    "quickPromptsTooltip": "Quick prompts",
+    "saveTemplateTooltip": "Save as template",
+    "quickPrompts": [
+      "New product announcement focused on benefits",
+      "Motivational post for entrepreneurs",
+      "Post about trends in the IT industry",
+      "Promote an online course",
+      "Customer success story / case study",
+      "Productivity tips post",
+      "Event / webinar announcement",
+      "Fun poll for the audience"
+    ]
+  },
+  "message": {
+    "text": "Text",
+    "preview": "Preview",
+    "chars": "characters",
+    "limitExceeded": "Limit exceeded",
+    "generating": "Generating...",
+    "regenerate": "Regenerate",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "copyMarkdown": "Copy Markdown",
+    "downloadTxt": "Download .txt"
+  },
+  "error": {
+    "retry": "Retry",
+    "network": "No internet connection",
+    "rateLimit": "Too many requests. Please wait.",
+    "forbidden": "Access denied. Check your settings.",
+    "server": "Server error. Please try again later.",
+    "unknown": "Unknown error"
+  }
+}

@@ -3,15 +3,26 @@
 import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Sparkles, Hash, Smile, Upload, Download } from 'lucide-react'
+import { useTranslations, useLocale } from 'next-intl'
 import { useStore } from '@/shared/model/store'
 import { PLATFORMS, TONES, LENGTHS, LANGUAGES, MODEL_OPTIONS } from '@/entities/platform/constants'
 import { TemplateLibrary } from '@/features/post-generation/ui/TemplateLibrary'
 import { HistoryPanel } from '@/features/post-generation/ui/HistoryPanel'
 import { exportHistory, importHistory } from '@/shared/lib/history-io'
+import { useRouter, usePathname } from '@/i18n/navigation'
+
+const LOCALE_LABELS: Record<string, string> = {
+  ru: '🇷🇺 Русский',
+  en: '🇬🇧 English',
+  es: '🇪🇸 Español',
+  de: '🇩🇪 Deutsch',
+  fr: '🇫🇷 Français',
+}
 
 export function Sidebar() {
   const { settings, selectedModel, setPlatform, setTone, setLength, setSettings, setModel } =
     useStore()
+  const t = useTranslations('sidebar')
 
   return (
     <aside className="w-64 flex-shrink-0 bg-[#0e0e1a] border-r border-[#1e1e2e] flex flex-col h-full overflow-y-auto">
@@ -32,7 +43,7 @@ export function Sidebar() {
         {/* Platform */}
         <section>
           <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
-            Платформа
+            {t('platform')}
           </label>
           <div className="space-y-0.5">
             {PLATFORMS.map(({ id, name, icon: Icon, color }) => (
@@ -64,7 +75,7 @@ export function Sidebar() {
         {/* Tone */}
         <section>
           <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
-            Тон
+            {t('tone')}
           </label>
           <div className="space-y-0.5">
             {TONES.map(({ id, name, emoji }) => (
@@ -88,7 +99,7 @@ export function Sidebar() {
         {/* Length */}
         <section>
           <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
-            Длина
+            {t('length')}
           </label>
           <div className="flex gap-1">
             {LENGTHS.map(({ id, label, icon: Icon }) => (
@@ -112,28 +123,28 @@ export function Sidebar() {
         {/* Options */}
         <section>
           <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
-            Опции
+            {t('options')}
           </label>
           <div className="space-y-1">
             <Toggle
               icon={Hash}
-              label="Хештеги"
+              label={t('hashtags')}
               value={settings.includeHashtags}
               onChange={(v) => setSettings({ includeHashtags: v })}
             />
             <Toggle
               icon={Smile}
-              label="Эмодзи"
+              label={t('emojis')}
               value={settings.includeEmojis}
               onChange={(v) => setSettings({ includeEmojis: v })}
             />
           </div>
         </section>
 
-        {/* Language */}
+        {/* Content Language (AI response language) */}
         <section>
           <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
-            Язык
+            {t('contentLanguage')}
           </label>
           <select
             value={settings.language}
@@ -146,6 +157,9 @@ export function Sidebar() {
           </select>
         </section>
 
+        {/* UI Language (locale switcher) */}
+        <LocaleSwitcher uiLanguageLabel={t('uiLanguage')} />
+
         {/* Templates */}
         <TemplateLibrary />
 
@@ -156,7 +170,7 @@ export function Sidebar() {
         {/* Model */}
         <section>
           <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
-            Модель
+            {t('model')}
           </label>
           <div className="space-y-0.5">
             {MODEL_OPTIONS.map(({ id, name, description, icon: Icon }) => (
@@ -195,9 +209,36 @@ export function Sidebar() {
   )
 }
 
+function LocaleSwitcher({ uiLanguageLabel }: { uiLanguageLabel: string }) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const locale = useLocale()
+
+  return (
+    <section>
+      <label className="text-slate-500 text-[10px] uppercase tracking-widest px-1 mb-2 block">
+        {uiLanguageLabel}
+      </label>
+      <select
+        data-testid="locale-switcher"
+        value={locale}
+        onChange={(e) => router.replace(pathname, { locale: e.target.value })}
+        className="w-full bg-[#1a1a2e] border border-[#2a2a3f] text-slate-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-violet-500 cursor-pointer"
+      >
+        {Object.entries(LOCALE_LABELS).map(([loc, label]) => (
+          <option key={loc} value={loc}>
+            {label}
+          </option>
+        ))}
+      </select>
+    </section>
+  )
+}
+
 function HistoryActions() {
   const messages = useStore((s) => s.messages)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const t = useTranslations('sidebar')
 
   const handleExport = () => {
     if (messages.length === 0) return
@@ -210,7 +251,8 @@ function HistoryActions() {
 
     try {
       const imported = await importHistory(file)
-      if (confirm(`Импортировать ${imported.length} сообщений? Текущая история будет заменена.`)) {
+      const confirmMsg = t('importConfirm', { count: imported.length })
+      if (confirm(confirmMsg)) {
         useStore.setState({ messages: imported })
       }
     } catch (err) {
@@ -229,14 +271,14 @@ function HistoryActions() {
         className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-slate-600 hover:text-slate-400 hover:bg-[#1a1a2e] transition-all"
       >
         <Download className="w-3 h-3" />
-        Экспорт
+        {t('export')}
       </button>
       <button
         onClick={() => fileInputRef.current?.click()}
         className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] text-slate-600 hover:text-slate-400 hover:bg-[#1a1a2e] transition-all"
       >
         <Upload className="w-3 h-3" />
-        Импорт
+        {t('import')}
       </button>
       <input
         ref={fileInputRef}

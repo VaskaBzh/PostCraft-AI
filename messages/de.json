@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "title": "PostCraft AI — Post-Generator",
+    "description": "KI-gestützter Social-Media-Post-Generator auf Basis von Claude"
+  },
+  "sidebar": {
+    "platform": "Plattform",
+    "tone": "Ton",
+    "length": "Länge",
+    "options": "Optionen",
+    "contentLanguage": "Antwortsprache",
+    "model": "Modell",
+    "hashtags": "Hashtags",
+    "emojis": "Emojis",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "uiLanguage": "Oberflächensprache",
+    "importConfirm": "{count} Nachrichten importieren? Der aktuelle Verlauf wird ersetzt."
+  },
+  "templates": {
+    "label": "Vorlagen",
+    "hint": "Prompt mit der ↓-Schaltfläche im Eingabefeld speichern",
+    "load": "Laden",
+    "delete": "Löschen"
+  },
+  "history": {
+    "label": "Verlauf",
+    "clear": "löschen",
+    "search": "Suchen...",
+    "filters": "Filter",
+    "reset": "Zurücksetzen",
+    "empty": "Verlauf ist leer",
+    "notFound": "Nichts gefunden",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "roleUser": "du",
+    "roleAi": "ki"
+  },
+  "chat": {
+    "title": "Post-Generator",
+    "generating": "Generiere...",
+    "tones": {
+      "professional": "Professionell",
+      "casual": "Locker",
+      "humorous": "Humorvoll",
+      "inspirational": "Inspirierend",
+      "bold": "Mutig"
+    },
+    "tonesShort": {
+      "professional": "Prof.",
+      "casual": "Locker",
+      "humorous": "Humor",
+      "inspirational": "Insp.",
+      "bold": "Mutig"
+    }
+  },
+  "empty": {
+    "title": "Bereit zur Post-Erstellung",
+    "subtitle": "Beschreibe ein Thema oder eine Idee — Claude erstellt einen Post passend zur Plattform und zum Ton",
+    "examples": {
+      "twitter": [
+        "Produktankündigung in 280 Zeichen",
+        "Scharfer Kommentar zu einem Trend",
+        "Tipps-Thread"
+      ],
+      "instagram": ["Marken-Story-Post", "Produkt-Foto-Caption", "Lifehack-Karussell"],
+      "linkedin": [
+        "Unternehmenserfolg-Fallstudie",
+        "Gedanken zur Zukunft der Branche",
+        "Stellenausschreibung"
+      ],
+      "facebook": ["Community-Neuigkeit", "Publikumsumfrage", "Gewinnspiel / Wettbewerb"],
+      "tiktok": ["Trending-Video-Beschreibung", "Hook für viralen Clip", "Bildungsinhalte"],
+      "telegram": ["Marktanalyse", "Eilmeldung", "Update-Ankündigung"]
+    }
+  },
+  "input": {
+    "placeholder": "Beschreibe ein Thema oder eine Idee... (Strg+Enter zum Senden)",
+    "hint": "Strg+Enter zum Senden · Claude Opus 4.8 mit Streaming",
+    "templateNamePlaceholder": "Vorlagenname...",
+    "quickPromptsTooltip": "Schnell-Prompts",
+    "saveTemplateTooltip": "Als Vorlage speichern",
+    "quickPrompts": [
+      "Neuprodukt-Ankündigung mit Fokus auf Vorteile",
+      "Motivationspost für Unternehmer",
+      "Post über Trends in der IT-Branche",
+      "Online-Kurs bewerben",
+      "Kundenerfolgs-Geschichte / Fallstudie",
+      "Produktivitätstipps-Post",
+      "Event- / Webinar-Ankündigung",
+      "Unterhaltsame Umfrage für das Publikum"
+    ]
+  },
+  "message": {
+    "text": "Text",
+    "preview": "Vorschau",
+    "chars": "Zeichen",
+    "limitExceeded": "Limit überschritten",
+    "generating": "Generiere...",
+    "regenerate": "Nochmal",
+    "copy": "Kopieren",
+    "copied": "Kopiert!",
+    "copyMarkdown": "Markdown kopieren",
+    "downloadTxt": ".txt herunterladen"
+  },
+  "error": {
+    "retry": "Wiederholen",
+    "network": "Keine Internetverbindung",
+    "rateLimit": "Zu viele Anfragen. Bitte warten.",
+    "forbidden": "Zugriff verweigert. Einstellungen prüfen.",
+    "server": "Serverfehler. Bitte später erneut versuchen.",
+    "unknown": "Unbekannter Fehler"
+  }
+}

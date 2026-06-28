@@ -1,6 +1,7 @@
-import { renderHook, act, waitFor } from '@testing-library/react'
+import { act, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useStore } from '@/shared/model/store'
+import { renderHook } from '@/test/utils'
 import { useStreamingGenerate } from './useStreamingGenerate'
 
 function makeStream(chunks: string[]) {
@@ -81,7 +82,7 @@ describe('useStreamingGenerate', () => {
     await act(() => result.current.generate('prompt'))
 
     const last = useStore.getState().messages.at(-1)
-    expect(last?.content).toMatch(/❌ Ошибка/)
+    expect(last?.content).toMatch(/❌/)
     expect(last?.isStreaming).toBe(false)
   })
 

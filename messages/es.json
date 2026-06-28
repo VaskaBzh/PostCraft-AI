@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "title": "PostCraft AI — Generador de publicaciones",
+    "description": "Generador de publicaciones para redes sociales impulsado por Claude"
+  },
+  "sidebar": {
+    "platform": "Plataforma",
+    "tone": "Tono",
+    "length": "Longitud",
+    "options": "Opciones",
+    "contentLanguage": "Idioma de respuesta",
+    "model": "Modelo",
+    "hashtags": "Hashtags",
+    "emojis": "Emojis",
+    "export": "Exportar",
+    "import": "Importar",
+    "uiLanguage": "Idioma de interfaz",
+    "importConfirm": "¿Importar {count} mensajes? El historial actual será reemplazado."
+  },
+  "templates": {
+    "label": "Plantillas",
+    "hint": "Guarda un prompt con el botón ↓ en el campo de entrada",
+    "load": "Cargar",
+    "delete": "Eliminar"
+  },
+  "history": {
+    "label": "Historial",
+    "clear": "limpiar",
+    "search": "Buscar...",
+    "filters": "Filtros",
+    "reset": "Restablecer",
+    "empty": "El historial está vacío",
+    "notFound": "No se encontró nada",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "roleUser": "tú",
+    "roleAi": "ai"
+  },
+  "chat": {
+    "title": "Generador de publicaciones",
+    "generating": "Generando...",
+    "tones": {
+      "professional": "Profesional",
+      "casual": "Casual",
+      "humorous": "Humorístico",
+      "inspirational": "Inspirador",
+      "bold": "Audaz"
+    },
+    "tonesShort": {
+      "professional": "Prof.",
+      "casual": "Casual",
+      "humorous": "Humor",
+      "inspirational": "Insp.",
+      "bold": "Audaz"
+    }
+  },
+  "empty": {
+    "title": "Listo para crear publicaciones",
+    "subtitle": "Describe un tema o idea — Claude creará una publicación adaptada a la plataforma y el tono",
+    "examples": {
+      "twitter": [
+        "Anuncio de producto en 280 caracteres",
+        "Comentario sobre tendencia viral",
+        "Hilo de consejos"
+      ],
+      "instagram": ["Historia de marca", "Caption para foto de producto", "Carrusel de consejos"],
+      "linkedin": [
+        "Caso de éxito empresarial",
+        "Reflexiones sobre el futuro del sector",
+        "Anuncio de vacante"
+      ],
+      "facebook": ["Noticia para la comunidad", "Encuesta a la audiencia", "Sorteo / concurso"],
+      "tiktok": [
+        "Descripción de vídeo en tendencia",
+        "Hook para clip viral",
+        "Contenido educativo"
+      ],
+      "telegram": ["Análisis de mercado", "Noticia de última hora", "Anuncio de actualización"]
+    }
+  },
+  "input": {
+    "placeholder": "Describe un tema o idea para tu publicación... (Ctrl+Enter para enviar)",
+    "hint": "Ctrl+Enter para enviar · Claude Opus 4.8 con streaming",
+    "templateNamePlaceholder": "Nombre de la plantilla...",
+    "quickPromptsTooltip": "Prompts rápidos",
+    "saveTemplateTooltip": "Guardar como plantilla",
+    "quickPrompts": [
+      "Anuncio de nuevo producto enfocado en beneficios",
+      "Post motivacional para emprendedores",
+      "Post sobre tendencias en la industria tecnológica",
+      "Promoción de curso online",
+      "Historia de éxito de cliente / caso de estudio",
+      "Consejos de productividad",
+      "Anuncio de evento / webinar",
+      "Encuesta divertida para la audiencia"
+    ]
+  },
+  "message": {
+    "text": "Texto",
+    "preview": "Vista previa",
+    "chars": "caracteres",
+    "limitExceeded": "Límite superado",
+    "generating": "Generando...",
+    "regenerate": "Regenerar",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "copyMarkdown": "Copiar Markdown",
+    "downloadTxt": "Descargar .txt"
+  },
+  "error": {
+    "retry": "Reintentar",
+    "network": "Sin conexión a internet",
+    "rateLimit": "Demasiadas solicitudes. Por favor, espera.",
+    "forbidden": "Acceso denegado. Verifica tu configuración.",
+    "server": "Error del servidor. Intenta más tarde.",
+    "unknown": "Error desconocido"
+  }
+}
