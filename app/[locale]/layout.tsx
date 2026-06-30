@@ -1,9 +1,14 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
+import { PwaRegister } from '@/shared/ui/PwaRegister'
 import '../globals.css'
+
+export const viewport: Viewport = {
+  themeColor: '#7c3aed',
+}
 
 interface Props {
   children: React.ReactNode
@@ -35,7 +40,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>
+          <PwaRegister />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   )

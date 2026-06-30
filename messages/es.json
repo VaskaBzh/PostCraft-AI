@@ -114,5 +114,34 @@
     "forbidden": "Acceso denegado. Verifica tu configuración.",
     "server": "Error del servidor. Intenta más tarde.",
     "unknown": "Error desconocido"
+  },
+  "modes": {
+    "chat": "Chat",
+    "bulk": "Todas las plataformas",
+    "variants": "Variantes",
+    "analytics": "Analíticas"
+  },
+  "analytics": {
+    "title": "Analíticas de uso",
+    "total": "Generaciones totales",
+    "byPlatform": "Por plataforma",
+    "byTone": "Por tono",
+    "byModel": "Por modelo",
+    "lastGenerated": "Última generación",
+    "empty": "Sin datos aún. ¡Genera tu primera publicación!",
+    "reset": "Restablecer estadísticas"
+  },
+  "variants": {
+    "title": "Variantes A/B",
+    "subtitle": "Tres versiones de la misma publicación con estilos diferentes",
+    "placeholder": "Describe un tema o idea para tu publicación... (Ctrl+Enter para enviar)",
+    "generate": "Generar 3 variantes",
+    "generating": "Generando...",
+    "standard": "Estándar",
+    "concise": "Conciso",
+    "creative": "Creativo",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "empty": "Escribe un tema y haz clic en «Generar»"
   }
 }

@@ -56,3 +56,11 @@ export interface Template {
   settings: Pick<AppSettings, 'platform' | 'tone' | 'length'>
   createdAt: number
 }
+
+export interface Analytics {
+  totalGenerations: number
+  byPlatform: Partial<Record<Platform, number>>
+  byTone: Partial<Record<Tone, number>>
+  byModel: Partial<Record<ModelId, number>>
+  lastGeneratedAt: number | null
+}

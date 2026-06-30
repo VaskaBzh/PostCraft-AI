@@ -21,6 +21,13 @@ beforeEach(() => {
     selectedModel: 'claude-opus-4-8',
     templates: [],
     pendingPrompt: null,
+    analytics: {
+      totalGenerations: 0,
+      byPlatform: {},
+      byTone: {},
+      byModel: {},
+      lastGeneratedAt: null,
+    },
     settings: {
       platform: 'instagram',
       tone: 'casual',
@@ -156,5 +163,43 @@ describe('isGenerating', () => {
     expect(useStore.getState().isGenerating).toBe(true)
     useStore.getState().setGenerating(false)
     expect(useStore.getState().isGenerating).toBe(false)
+  })
+})
+
+describe('analytics', () => {
+  it('increments totalGenerations when updateLastMessage called with done=true', () => {
+    useStore.getState().addMessage(makeMsg({ role: 'assistant', content: '', isStreaming: true }))
+    useStore.getState().updateLastMessage('Post content', true)
+    expect(useStore.getState().analytics.totalGenerations).toBe(1)
+  })
+
+  it('tracks platform in byPlatform', () => {
+    useStore.getState().setPlatform('twitter')
+    useStore.getState().addMessage(makeMsg({ role: 'assistant', isStreaming: true }))
+    useStore.getState().updateLastMessage('Done', true)
+    expect(useStore.getState().analytics.byPlatform.twitter).toBe(1)
+  })
+
+  it('tracks model in byModel', () => {
+    useStore.getState().setModel('claude-haiku-4-5')
+    useStore.getState().addMessage(makeMsg({ role: 'assistant', isStreaming: true }))
+    useStore.getState().updateLastMessage('Done', true)
+    expect(useStore.getState().analytics.byModel['claude-haiku-4-5']).toBe(1)
+  })
+
+  it('does not track error messages', () => {
+    useStore.getState().addMessage(makeMsg({ role: 'assistant', isStreaming: true }))
+    useStore.getState().updateLastMessage('❌ Error occurred', true)
+    expect(useStore.getState().analytics.totalGenerations).toBe(0)
+  })
+
+  it('clearAnalytics resets all counters', () => {
+    useStore.getState().addMessage(makeMsg({ role: 'assistant', isStreaming: true }))
+    useStore.getState().updateLastMessage('Done', true)
+    useStore.getState().clearAnalytics()
+    const { analytics } = useStore.getState()
+    expect(analytics.totalGenerations).toBe(0)
+    expect(analytics.byPlatform).toEqual({})
+    expect(analytics.lastGeneratedAt).toBeNull()
   })
 })

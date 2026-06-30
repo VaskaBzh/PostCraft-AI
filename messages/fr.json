@@ -110,5 +110,34 @@
     "forbidden": "Accès refusé. Vérifiez vos paramètres.",
     "server": "Erreur serveur. Réessayez plus tard.",
     "unknown": "Erreur inconnue"
+  },
+  "modes": {
+    "chat": "Chat",
+    "bulk": "Toutes les plateformes",
+    "variants": "Variantes",
+    "analytics": "Analytiques"
+  },
+  "analytics": {
+    "title": "Analytiques d'utilisation",
+    "total": "Générations totales",
+    "byPlatform": "Par plateforme",
+    "byTone": "Par ton",
+    "byModel": "Par modèle",
+    "lastGenerated": "Dernière génération",
+    "empty": "Pas encore de données. Générez votre première publication !",
+    "reset": "Réinitialiser les stats"
+  },
+  "variants": {
+    "title": "Variantes A/B",
+    "subtitle": "Trois versions de la même publication avec des styles différents",
+    "placeholder": "Décrivez un sujet ou une idée... (Ctrl+Entrée pour envoyer)",
+    "generate": "Générer 3 variantes",
+    "generating": "Génération...",
+    "standard": "Standard",
+    "concise": "Concis",
+    "creative": "Créatif",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "empty": "Entrez un sujet et cliquez sur «Générer»"
   }
 }
