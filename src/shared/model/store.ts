@@ -10,7 +10,16 @@ import type {
   Length,
   ModelId,
   Template,
+  Analytics,
 } from '@/entities/platform/types'
+
+const EMPTY_ANALYTICS: Analytics = {
+  totalGenerations: 0,
+  byPlatform: {},
+  byTone: {},
+  byModel: {},
+  lastGeneratedAt: null,
+}
 
 interface StoreState {
   messages: Message[]
@@ -19,6 +28,7 @@ interface StoreState {
   selectedModel: ModelId
   templates: Template[]
   pendingPrompt: string | null
+  analytics: Analytics
   addMessage: (msg: Message) => void
   updateLastMessage: (content: string, done?: boolean) => void
   clearMessages: () => void
@@ -36,6 +46,7 @@ interface StoreState {
   deleteTemplate: (id: string) => void
   loadPrompt: (prompt: string) => void
   clearPendingPrompt: () => void
+  clearAnalytics: () => void
 }
 
 export const useStore = create<StoreState>()(
@@ -46,6 +57,7 @@ export const useStore = create<StoreState>()(
       selectedModel: 'claude-opus-4-8',
       templates: [],
       pendingPrompt: null,
+      analytics: { ...EMPTY_ANALYTICS },
       settings: {
         platform: 'instagram',
         tone: 'casual',
@@ -72,6 +84,30 @@ export const useStore = create<StoreState>()(
           if (last && last.role === 'assistant') {
             msgs[msgs.length - 1] = { ...last, content, isStreaming: !done }
           }
+
+          if (done && last?.role === 'assistant' && content && !content.startsWith('❌')) {
+            const a = s.analytics
+            return {
+              messages: msgs,
+              analytics: {
+                totalGenerations: a.totalGenerations + 1,
+                byPlatform: {
+                  ...a.byPlatform,
+                  [s.settings.platform]: (a.byPlatform[s.settings.platform] ?? 0) + 1,
+                },
+                byTone: {
+                  ...a.byTone,
+                  [s.settings.tone]: (a.byTone[s.settings.tone] ?? 0) + 1,
+                },
+                byModel: {
+                  ...a.byModel,
+                  [s.selectedModel]: (a.byModel[s.selectedModel] ?? 0) + 1,
+                },
+                lastGeneratedAt: Date.now(),
+              },
+            }
+          }
+
           return { messages: msgs }
         }),
 
@@ -107,6 +143,8 @@ export const useStore = create<StoreState>()(
 
       loadPrompt: (prompt) => set({ pendingPrompt: prompt }),
       clearPendingPrompt: () => set({ pendingPrompt: null }),
+
+      clearAnalytics: () => set({ analytics: { ...EMPTY_ANALYTICS } }),
     }),
     {
       name: 'postcraft-store',
@@ -115,6 +153,7 @@ export const useStore = create<StoreState>()(
         selectedModel: s.selectedModel,
         templates: s.templates,
         messages: s.messages,
+        analytics: s.analytics,
       }),
     }
   )

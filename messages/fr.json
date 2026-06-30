@@ -1,0 +1,143 @@
+{
+  "metadata": {
+    "title": "PostCraft AI — Générateur de publications",
+    "description": "Générateur de publications pour réseaux sociaux propulsé par Claude"
+  },
+  "sidebar": {
+    "platform": "Plateforme",
+    "tone": "Ton",
+    "length": "Longueur",
+    "options": "Options",
+    "contentLanguage": "Langue de réponse",
+    "model": "Modèle",
+    "hashtags": "Hashtags",
+    "emojis": "Emojis",
+    "export": "Exporter",
+    "import": "Importer",
+    "uiLanguage": "Langue de l'interface",
+    "importConfirm": "Importer {count} messages ? L'historique actuel sera remplacé."
+  },
+  "templates": {
+    "label": "Modèles",
+    "hint": "Enregistrez un prompt avec le bouton ↓ dans le champ de saisie",
+    "load": "Charger",
+    "delete": "Supprimer"
+  },
+  "history": {
+    "label": "Historique",
+    "clear": "effacer",
+    "search": "Rechercher...",
+    "filters": "Filtres",
+    "reset": "Réinitialiser",
+    "empty": "L'historique est vide",
+    "notFound": "Rien trouvé",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "roleUser": "toi",
+    "roleAi": "ia"
+  },
+  "chat": {
+    "title": "Générateur de publications",
+    "generating": "Génération...",
+    "tones": {
+      "professional": "Professionnel",
+      "casual": "Décontracté",
+      "humorous": "Humoristique",
+      "inspirational": "Inspirant",
+      "bold": "Audacieux"
+    },
+    "tonesShort": {
+      "professional": "Prof.",
+      "casual": "Décon.",
+      "humorous": "Humor",
+      "inspirational": "Insp.",
+      "bold": "Aud."
+    }
+  },
+  "empty": {
+    "title": "Prêt à créer des publications",
+    "subtitle": "Décrivez un sujet ou une idée — Claude créera une publication adaptée à la plateforme et au ton",
+    "examples": {
+      "twitter": [
+        "Annonce produit en 280 caractères",
+        "Commentaire percutant sur une tendance",
+        "Thread de conseils"
+      ],
+      "instagram": ["Post histoire de marque", "Légende photo produit", "Carrousel d'astuces"],
+      "linkedin": [
+        "Étude de cas de succès",
+        "Réflexions sur l'avenir du secteur",
+        "Annonce d'offre d'emploi"
+      ],
+      "facebook": ["Actualité pour la communauté", "Sondage audience", "Jeu concours"],
+      "tiktok": ["Description vidéo tendance", "Accroche pour clip viral", "Contenu éducatif"],
+      "telegram": ["Analyse de marché", "Actualité urgente", "Annonce de mise à jour"]
+    }
+  },
+  "input": {
+    "placeholder": "Décrivez un sujet ou une idée pour votre publication... (Ctrl+Entrée pour envoyer)",
+    "hint": "Ctrl+Entrée pour envoyer · Claude Opus 4.8 avec streaming",
+    "templateNamePlaceholder": "Nom du modèle...",
+    "quickPromptsTooltip": "Prompts rapides",
+    "saveTemplateTooltip": "Enregistrer comme modèle",
+    "quickPrompts": [
+      "Annonce de nouveau produit axée sur les avantages",
+      "Post motivationnel pour entrepreneurs",
+      "Post sur les tendances de l'industrie tech",
+      "Promotion d'un cours en ligne",
+      "Histoire de succès client / étude de cas",
+      "Post de conseils de productivité",
+      "Annonce d'événement / webinaire",
+      "Sondage amusant pour l'audience"
+    ]
+  },
+  "message": {
+    "text": "Texte",
+    "preview": "Aperçu",
+    "chars": "caractères",
+    "limitExceeded": "Limite dépassée",
+    "generating": "Génération...",
+    "regenerate": "Régénérer",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "copyMarkdown": "Copier en Markdown",
+    "downloadTxt": "Télécharger .txt"
+  },
+  "error": {
+    "retry": "Réessayer",
+    "network": "Pas de connexion internet",
+    "rateLimit": "Trop de requêtes. Veuillez patienter.",
+    "forbidden": "Accès refusé. Vérifiez vos paramètres.",
+    "server": "Erreur serveur. Réessayez plus tard.",
+    "unknown": "Erreur inconnue"
+  },
+  "modes": {
+    "chat": "Chat",
+    "bulk": "Toutes les plateformes",
+    "variants": "Variantes",
+    "analytics": "Analytiques"
+  },
+  "analytics": {
+    "title": "Analytiques d'utilisation",
+    "total": "Générations totales",
+    "byPlatform": "Par plateforme",
+    "byTone": "Par ton",
+    "byModel": "Par modèle",
+    "lastGenerated": "Dernière génération",
+    "empty": "Pas encore de données. Générez votre première publication !",
+    "reset": "Réinitialiser les stats"
+  },
+  "variants": {
+    "title": "Variantes A/B",
+    "subtitle": "Trois versions de la même publication avec des styles différents",
+    "placeholder": "Décrivez un sujet ou une idée... (Ctrl+Entrée pour envoyer)",
+    "generate": "Générer 3 variantes",
+    "generating": "Génération...",
+    "standard": "Standard",
+    "concise": "Concis",
+    "creative": "Créatif",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "empty": "Entrez un sujet et cliquez sur «Générer»"
+  }
+}

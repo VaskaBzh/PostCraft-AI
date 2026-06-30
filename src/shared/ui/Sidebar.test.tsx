@@ -4,6 +4,11 @@ import { render } from '@/test/utils'
 import { useStore } from '@/shared/model/store'
 import { Sidebar } from './Sidebar'
 
+vi.mock('@/i18n/navigation', () => ({
+  useRouter: () => ({ replace: vi.fn() }),
+  usePathname: () => '/ru/',
+}))
+
 vi.mock('@/features/post-generation/ui/TemplateLibrary', () => ({
   TemplateLibrary: () => <div data-testid="template-library" />,
 }))
@@ -114,5 +119,10 @@ describe('Sidebar', () => {
     render(<Sidebar />)
     fireEvent.click(screen.getByText('Haiku').closest('button')!)
     expect(useStore.getState().selectedModel).toBe('claude-haiku-4-5')
+  })
+
+  it('renders locale switcher', () => {
+    render(<Sidebar />)
+    expect(screen.getByTestId('locale-switcher')).toBeInTheDocument()
   })
 })

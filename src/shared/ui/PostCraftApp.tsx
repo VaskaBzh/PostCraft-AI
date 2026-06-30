@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
-import { MessageSquare, Layers } from 'lucide-react'
+import { MessageSquare, Layers, GitBranch, BarChart2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { ChatInterface } from '@/features/post-generation/ui/ChatInterface'
 import { NetworkStatus } from './NetworkStatus'
 
@@ -27,10 +28,46 @@ const BulkGenerationView = dynamic(
   }
 )
 
-type Mode = 'chat' | 'bulk'
+const ABVariantsView = dynamic(
+  () =>
+    import('@/features/post-generation/ui/ABVariantsView').then((m) => ({
+      default: m.ABVariantsView,
+    })),
+  {
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center text-slate-600 text-sm">
+        Loading...
+      </div>
+    ),
+  }
+)
+
+const AnalyticsDashboard = dynamic(
+  () =>
+    import('@/features/analytics/ui/AnalyticsDashboard').then((m) => ({
+      default: m.AnalyticsDashboard,
+    })),
+  {
+    loading: () => (
+      <div className="flex-1 flex items-center justify-center text-slate-600 text-sm">
+        Loading...
+      </div>
+    ),
+  }
+)
+
+type Mode = 'chat' | 'bulk' | 'variants' | 'analytics'
 
 export function PostCraftApp() {
   const [mode, setMode] = useState<Mode>('chat')
+  const t = useTranslations('modes')
+
+  const MODES: { id: Mode; icon: React.ElementType }[] = [
+    { id: 'chat', icon: MessageSquare },
+    { id: 'bulk', icon: Layers },
+    { id: 'variants', icon: GitBranch },
+    { id: 'analytics', icon: BarChart2 },
+  ]
 
   return (
     <div className="h-screen bg-[#080810] flex overflow-hidden">
@@ -44,14 +81,8 @@ export function PostCraftApp() {
 
       <main className="flex-1 flex flex-col min-w-0">
         <NetworkStatus />
-        {/* Mode switcher */}
         <div className="flex-shrink-0 flex items-center gap-1 px-4 pt-3 pb-0">
-          {(
-            [
-              { id: 'chat' as Mode, label: 'Чат', icon: MessageSquare },
-              { id: 'bulk' as Mode, label: 'Все платформы', icon: Layers },
-            ] as const
-          ).map(({ id, label, icon: Icon }) => (
+          {MODES.map(({ id, icon: Icon }) => (
             <motion.button
               key={id}
               whileTap={{ scale: 0.97 }}
@@ -63,12 +94,15 @@ export function PostCraftApp() {
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
-              {label}
+              {t(id)}
             </motion.button>
           ))}
         </div>
 
-        {mode === 'chat' ? <ChatInterface /> : <BulkGenerationView />}
+        {mode === 'chat' && <ChatInterface />}
+        {mode === 'bulk' && <BulkGenerationView />}
+        {mode === 'variants' && <ABVariantsView />}
+        {mode === 'analytics' && <AnalyticsDashboard />}
       </main>
     </div>
   )
